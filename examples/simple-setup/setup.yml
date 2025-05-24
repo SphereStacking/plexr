@@ -1,0 +1,30 @@
+name: "Simple Project Setup"
+version: "1.0.0"
+description: "A simple example of Plexr setup"
+
+executors:
+  shell:
+    type: shell
+    shell: /bin/bash
+
+steps:
+  - id: check_tools
+    description: "Check required tools"
+    executor: shell
+    files:
+      - path: "scripts/check_tools.sh"
+        timeout: 10
+
+  - id: create_directories
+    description: "Create project directories"
+    executor: shell
+    depends_on: [check_tools]
+    files:
+      - path: "scripts/create_dirs.sh"
+
+  - id: setup_git
+    description: "Setup Git configuration"
+    executor: shell
+    depends_on: [create_directories]
+    files:
+      - path: "scripts/setup_git.sh"
