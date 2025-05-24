@@ -102,7 +102,7 @@ func (e *ShellExecutor) Execute(ctx context.Context, file ExecutionFile) (*Execu
 
 	// Execute
 	err := cmd.Run()
-	
+
 	output := stdout.String()
 	if stderr.Len() > 0 {
 		output += "\n" + stderr.String()
@@ -116,7 +116,7 @@ func (e *ShellExecutor) Execute(ctx context.Context, file ExecutionFile) (*Execu
 	}
 
 	if err != nil {
-		if ctx.Err() == context.DeadlineExceeded {
+		if execCtx.Err() == context.DeadlineExceeded {
 			return result, fmt.Errorf("execution timeout after %d seconds", file.Timeout)
 		}
 		return result, fmt.Errorf("execution failed: %w", err)

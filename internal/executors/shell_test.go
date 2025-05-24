@@ -109,7 +109,7 @@ echo "Should not see this"`
 
 		file := ExecutionFile{
 			Path:    scriptPath,
-			Timeout: 1, // 1 second timeout
+			Timeout: 1,
 		}
 
 		result, err := executor.Execute(ctx, file)
@@ -133,7 +133,7 @@ echo "Should not see this"`
 
 	t.Run("Platform-specific execution", func(t *testing.T) {
 		tmpDir := t.TempDir()
-		
+
 		// Create platform-specific scripts
 		darwinScript := filepath.Join(tmpDir, "darwin.sh")
 		linuxScript := filepath.Join(tmpDir, "linux.sh")
@@ -156,7 +156,7 @@ echo "Running on Linux"`), 0755)
 		}
 
 		result, err := executor.Execute(ctx, file)
-		
+
 		if runtime.GOOS == "darwin" {
 			require.NoError(t, err)
 			assert.True(t, result.Success)
