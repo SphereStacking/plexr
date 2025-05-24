@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -53,6 +52,7 @@ func NewVersionCommand() *cobra.Command {
 func Execute() {
 	rootCmd := NewRootCommand()
 	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
+		// Error is already printed by cobra
+		// Just exit with non-zero status
 	}
 }
