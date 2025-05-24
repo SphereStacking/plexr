@@ -2,11 +2,11 @@ package core
 
 import (
 	"context"
-	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/SphereStacking/plexr/internal/config"
+	"github.com/SphereStacking/plexr/internal/executors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -14,7 +14,7 @@ import (
 // MockExecutor is a mock executor for testing
 type MockExecutor struct {
 	name          string
-	executeFunc   func(ctx context.Context, file ExecutionFile) (*ExecutionResult, error)
+	executeFunc   func(ctx context.Context, file executors.ExecutionFile) (*executors.ExecutionResult, error)
 	validateFunc  func(config map[string]interface{}) error
 	executeCalled int
 }
@@ -23,12 +23,12 @@ func (m *MockExecutor) Name() string {
 	return m.name
 }
 
-func (m *MockExecutor) Execute(ctx context.Context, file ExecutionFile) (*ExecutionResult, error) {
+func (m *MockExecutor) Execute(ctx context.Context, file executors.ExecutionFile) (*executors.ExecutionResult, error) {
 	m.executeCalled++
 	if m.executeFunc != nil {
 		return m.executeFunc(ctx, file)
 	}
-	return &ExecutionResult{Success: true, Output: "mock output"}, nil
+	return &executors.ExecutionResult{Success: true, Output: "mock output"}, nil
 }
 
 func (m *MockExecutor) Validate(config map[string]interface{}) error {
@@ -97,8 +97,8 @@ func TestRunner(t *testing.T) {
 
 		mockExec := &MockExecutor{
 			name: "mock",
-			executeFunc: func(ctx context.Context, file ExecutionFile) (*ExecutionResult, error) {
-				return &ExecutionResult{
+			executeFunc: func(ctx context.Context, file executors.ExecutionFile) (*executors.ExecutionResult, error) {
+				return &executors.ExecutionResult{
 					Success: true,
 					Output:  "executed " + file.Path,
 				}, nil
@@ -153,9 +153,9 @@ func TestRunner(t *testing.T) {
 		executionOrder := []string{}
 		mockExec := &MockExecutor{
 			name: "mock",
-			executeFunc: func(ctx context.Context, file ExecutionFile) (*ExecutionResult, error) {
+			executeFunc: func(ctx context.Context, file executors.ExecutionFile) (*executors.ExecutionResult, error) {
 				executionOrder = append(executionOrder, file.Path)
-				return &ExecutionResult{Success: true}, nil
+				return &executors.ExecutionResult{Success: true}, nil
 			},
 		}
 		err = runner.RegisterExecutor("mock", mockExec)
@@ -209,9 +209,9 @@ func TestRunner(t *testing.T) {
 		executedFiles := []string{}
 		mockExec := &MockExecutor{
 			name: "mock",
-			executeFunc: func(ctx context.Context, file ExecutionFile) (*ExecutionResult, error) {
+			executeFunc: func(ctx context.Context, file executors.ExecutionFile) (*executors.ExecutionResult, error) {
 				executedFiles = append(executedFiles, file.Path)
-				return &ExecutionResult{Success: true}, nil
+				return &executors.ExecutionResult{Success: true}, nil
 			},
 		}
 		err = runner.RegisterExecutor("mock", mockExec)
@@ -254,9 +254,9 @@ func TestRunner(t *testing.T) {
 		executedFiles := []string{}
 		mockExec := &MockExecutor{
 			name: "mock",
-			executeFunc: func(ctx context.Context, file ExecutionFile) (*ExecutionResult, error) {
+			executeFunc: func(ctx context.Context, file executors.ExecutionFile) (*executors.ExecutionResult, error) {
 				executedFiles = append(executedFiles, file.Path)
-				return &ExecutionResult{Success: true}, nil
+				return &executors.ExecutionResult{Success: true}, nil
 			},
 		}
 		err = runner.RegisterExecutor("mock", mockExec)

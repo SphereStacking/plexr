@@ -125,7 +125,7 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 	}
 
 	for _, fileConfig := range step.Files {
-		file := ExecutionFile{
+		file := executors.ExecutionFile{
 			Path:     fileConfig.Path,
 			Timeout:  fileConfig.Timeout,
 			Retry:    fileConfig.Retry,

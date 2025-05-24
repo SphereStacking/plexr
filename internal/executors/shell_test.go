@@ -7,7 +7,6 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/SphereStacking/plexr/internal/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -55,7 +54,7 @@ exit 0`
 		executor := NewShellExecutor()
 		ctx := context.Background()
 
-		file := core.ExecutionFile{
+		file := ExecutionFile{
 			Path: scriptPath,
 		}
 
@@ -80,7 +79,7 @@ exit 1`
 		executor := NewShellExecutor()
 		ctx := context.Background()
 
-		file := core.ExecutionFile{
+		file := ExecutionFile{
 			Path: scriptPath,
 		}
 
@@ -108,7 +107,7 @@ echo "Should not see this"`
 		executor := NewShellExecutor()
 		ctx := context.Background()
 
-		file := core.ExecutionFile{
+		file := ExecutionFile{
 			Path:    scriptPath,
 			Timeout: 1, // 1 second timeout
 		}
@@ -123,7 +122,7 @@ echo "Should not see this"`
 		executor := NewShellExecutor()
 		ctx := context.Background()
 
-		file := core.ExecutionFile{
+		file := ExecutionFile{
 			Path: "/non/existent/script.sh",
 		}
 
@@ -151,7 +150,7 @@ echo "Running on Linux"`), 0755)
 		ctx := context.Background()
 
 		// Test with platform filter
-		file := core.ExecutionFile{
+		file := ExecutionFile{
 			Path:     darwinScript,
 			Platform: "darwin",
 		}
