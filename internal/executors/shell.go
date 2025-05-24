@@ -8,9 +8,23 @@ import (
 	"os/exec"
 	"runtime"
 	"time"
-
-	"github.com/SphereStacking/plexr/internal/core"
 )
+
+// ExecutionFile represents a file to be executed
+type ExecutionFile struct {
+	Path     string
+	Timeout  int
+	Retry    int
+	Platform string
+}
+
+// ExecutionResult represents the result of executing a file
+type ExecutionResult struct {
+	Success  bool
+	Output   string
+	Error    error
+	Duration int64 // in milliseconds
+}
 
 // ShellExecutor executes shell scripts
 type ShellExecutor struct {
@@ -44,12 +58,12 @@ func (e *ShellExecutor) Validate(config map[string]interface{}) error {
 }
 
 // Execute executes a shell script
-func (e *ShellExecutor) Execute(ctx context.Context, file core.ExecutionFile) (*core.ExecutionResult, error) {
+func (e *ShellExecutor) Execute(ctx context.Context, file ExecutionFile) (*ExecutionResult, error) {
 	start := time.Now()
 
 	// Check platform compatibility
 	if file.Platform != "" && file.Platform != runtime.GOOS {
-		return &core.ExecutionResult{
+		return &ExecutionResult{
 			Success:  true,
 			Output:   fmt.Sprintf("Skipping file %s (platform: %s, current: %s)", file.Path, file.Platform, runtime.GOOS),
 			Duration: time.Since(start).Milliseconds(),
@@ -58,7 +72,7 @@ func (e *ShellExecutor) Execute(ctx context.Context, file core.ExecutionFile) (*
 
 	// Check if file exists
 	if _, err := os.Stat(file.Path); err != nil {
-		return &core.ExecutionResult{
+		return &ExecutionResult{
 			Success:  false,
 			Error:    err,
 			Duration: time.Since(start).Milliseconds(),
@@ -94,7 +108,7 @@ func (e *ShellExecutor) Execute(ctx context.Context, file core.ExecutionFile) (*
 		output += "\n" + stderr.String()
 	}
 
-	result := &core.ExecutionResult{
+	result := &ExecutionResult{
 		Success:  err == nil,
 		Output:   output,
 		Error:    err,
