@@ -39,7 +39,10 @@ func runReset(cmd *cobra.Command, args []string) error {
 	if !auto {
 		fmt.Print("⚠️  This will reset all execution state. Continue? [y/N]: ")
 		var response string
-		fmt.Scanln(&response)
+		if _, err := fmt.Scanln(&response); err != nil {
+			fmt.Printf("\nFailed to read input: %v\n", err)
+			return err
+		}
 		if response != "y" && response != "Y" {
 			fmt.Println("Reset cancelled.")
 			return nil

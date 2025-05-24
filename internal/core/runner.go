@@ -50,10 +50,10 @@ func (r *Runner) RegisterExecutor(name string, executor Executor) error {
 // Execute runs the execution plan
 func (r *Runner) Execute(ctx context.Context) error {
 	// Load or create state
-	state, err := r.stateManager.Load()
+	_, err := r.stateManager.Load()
 	if err != nil {
 		// Create new state
-		state = &ExecutionState{
+		state := &ExecutionState{
 			SetupName:      r.plan.Name,
 			SetupVersion:   r.plan.Version,
 			Platform:       r.platform,
