@@ -3,7 +3,6 @@ package cli
 import (
 	"context"
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/SphereStacking/plexr/internal/config"
