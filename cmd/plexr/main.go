@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"github.com/SphereStacking/plexr/internal/cli"
 )
 
 func main() {
-	fmt.Println("Plexr - Local Development Environment Setup Tool")
-	os.Exit(0)
+	cli.Execute()
 }
