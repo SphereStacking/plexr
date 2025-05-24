@@ -1,0 +1,49 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace files
+go.work
+go.work.sum
+
+# Dependency directories
+vendor/
+
+# Build output
+/plexr
+/dist/
+/build/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Plexr specific
+.plexr_state.json
+.plexr_history.jsonl
+logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test artifacts
+coverage.txt
+coverage.html
