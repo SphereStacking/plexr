@@ -1,0 +1,50 @@
+name: Basic Development Environment
+version: 1.0.0
+description: |
+  基本的な開発環境のセットアップを行います。
+  必要なツールのインストール、設定ファイルの配置、
+  開発用のディレクトリ構造の作成を行います。
+
+steps:
+  - id: install-tools
+    description: 必要な開発ツールをインストール
+    executor: shell
+    files:
+      - path: scripts/install-tools.sh
+        platform: linux
+      - path: scripts/install-tools.ps1
+        platform: windows
+
+  - id: setup-git
+    description: Gitの初期設定を行う
+    executor: shell
+    files:
+      - path: scripts/setup-git.sh
+        platform: linux
+      - path: scripts/setup-git.ps1
+        platform: windows
+
+  - id: create-directories
+    description: 開発用ディレクトリを作成
+    executor: shell
+    files:
+      - path: scripts/create-dirs.sh
+        platform: linux
+      - path: scripts/create-dirs.ps1
+        platform: windows
+
+  - id: setup-vscode
+    description: VSCodeの設定を行う
+    executor: shell
+    files:
+      - path: scripts/setup-vscode.sh
+        platform: linux
+      - path: scripts/setup-vscode.ps1
+        platform: windows
+
+executors:
+  shell:
+    type: shell
+    config:
+      shell: /bin/bash  # Linuxの場合
+      # shell: powershell.exe  # Windowsの場合 

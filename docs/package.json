@@ -1,0 +1,15 @@
+{
+  "name": "plexr-docs",
+  "version": "1.0.0",
+  "description": "Documentation for Plexr",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.31",
+    "vue": "^3.3.13"
+  }
+}

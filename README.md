@@ -5,6 +5,8 @@ A developer-friendly CLI tool for automating local development environment setup
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+> ⚠️ **Note**: This project was created through vibe coding sessions. While the core concepts and architecture are in place, some features described in this documentation may not be fully implemented yet. Please refer to the [Project Status](#-project-status) section for details on what's currently available.
+
 ## 🎯 What is Plexr?
 
 Plexr (Plan + Executor) helps developers set up and maintain their local development environments through simple YAML configuration files. No more "works on my machine" issues or spending hours following outdated setup documentation.
@@ -105,15 +107,25 @@ Plexr makes environment setup:
 
 ## 🏗️ Project Status
 
-Plexr is currently in active development. We're working towards a stable v1.0 release.
+Plexr is currently in active development. This project was created through vibe coding sessions, and we're working towards a stable v1.0 release.
 
+### Currently Implemented
 - [x] Core execution engine
 - [x] Shell executor
-- [x] SQL executor
 - [x] State management
-- [ ] Platform detection
+- [x] Basic CLI commands (execute, validate, status, reset)
+- [x] YAML configuration parsing
+- [x] Dependency resolution
+
+### In Progress / Not Yet Implemented
+- [ ] SQL executor (documented but not implemented)
+- [ ] Platform detection (partial implementation)
 - [ ] Interactive help system
 - [ ] Plugin system
+- [ ] Transaction mode
+- [ ] Some advanced features described in documentation
+
+**Important**: While the documentation describes the complete vision for Plexr, not all features are currently implemented. The core functionality for basic execution plans is working, but advanced features like SQL executors, transaction modes, and some platform-specific handling may not be available yet.
 
 ## 🤝 Contributing
 
@@ -145,3 +157,7 @@ Inspired by tools like Ansible, Make, and various database migration tools, but 
 ---
 
 Made with ❤️ for developers who just want their environment to work.
+
+## 📚 Documentation
+
+Full documentation is available at: https://spherestacking.github.io/plexr/
