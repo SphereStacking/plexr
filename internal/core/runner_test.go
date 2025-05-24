@@ -39,10 +39,10 @@ func (m *MockExecutor) Validate(config map[string]interface{}) error {
 }
 
 func TestRunner(t *testing.T) {
-	tmpDir := t.TempDir()
-	stateFile := filepath.Join(tmpDir, "state.json")
-
 	t.Run("NewRunner", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		stateFile := filepath.Join(tmpDir, "state_newrunner.json")
+
 		plan := &config.ExecutionPlan{
 			Name:    "Test",
 			Version: "1.0.0",
@@ -57,6 +57,9 @@ func TestRunner(t *testing.T) {
 	})
 
 	t.Run("RegisterExecutor", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		stateFile := filepath.Join(tmpDir, "state_registerexecutor.json")
+
 		plan := &config.ExecutionPlan{
 			Name:    "Test",
 			Version: "1.0.0",
@@ -75,6 +78,9 @@ func TestRunner(t *testing.T) {
 	})
 
 	t.Run("Execute simple plan", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		stateFile := filepath.Join(tmpDir, "state_simple.json")
+
 		plan := &config.ExecutionPlan{
 			Name:    "Test",
 			Version: "1.0.0",
@@ -120,6 +126,9 @@ func TestRunner(t *testing.T) {
 	})
 
 	t.Run("Execute with dependencies", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		stateFile := filepath.Join(tmpDir, "state_deps.json")
+
 		plan := &config.ExecutionPlan{
 			Name:    "Test",
 			Version: "1.0.0",
@@ -171,6 +180,9 @@ func TestRunner(t *testing.T) {
 	})
 
 	t.Run("Skip completed steps", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		stateFile := filepath.Join(tmpDir, "state_skip.json")
+
 		// Create initial state with step1 completed
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
@@ -227,6 +239,9 @@ func TestRunner(t *testing.T) {
 	})
 
 	t.Run("Execute with skip_if condition", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		stateFile := filepath.Join(tmpDir, "state_skipif.json")
+
 		plan := &config.ExecutionPlan{
 			Name:    "Test",
 			Version: "1.0.0",

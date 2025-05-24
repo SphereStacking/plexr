@@ -88,9 +88,25 @@ func (r *Runner) Execute(ctx context.Context) error {
 
 		// Check skip condition
 		if step.SkipIf != "" {
-			// For now, we'll implement a simple check
-			if step.SkipIf == "true" {
+			// Evaluate skip condition
+			shouldSkip := false
+			switch step.SkipIf {
+			case "true":
+				shouldSkip = true
+			case "false":
+				shouldSkip = false
+			default:
+				// Check if the condition is a step ID that has been completed
+				shouldSkip = r.stateManager.IsStepCompleted(step.SkipIf)
+			}
+
+			if shouldSkip {
 				fmt.Printf("Skipping step %s due to skip_if condition\n", stepID)
+				// Mark as completed even if skipped
+				err = r.stateManager.MarkStepCompleted(stepID)
+				if err != nil {
+					return fmt.Errorf("failed to mark skipped step %s as completed: %w", stepID, err)
+				}
 				continue
 			}
 		}
@@ -160,7 +176,10 @@ func (r *Runner) buildExecutionOrder() ([]string, error) {
 			return nil
 		}
 
-		visited[stepID] = true
+		if recStack[stepID] {
+			return fmt.Errorf("circular dependency detected")
+		}
+
 		recStack[stepID] = true
 
 		step := r.findStep(stepID)
@@ -169,9 +188,6 @@ func (r *Runner) buildExecutionOrder() ([]string, error) {
 		}
 
 		for _, dep := range step.DependsOn {
-			if recStack[dep] {
-				return fmt.Errorf("circular dependency detected")
-			}
 			err := visit(dep)
 			if err != nil {
 				return err
@@ -179,14 +195,17 @@ func (r *Runner) buildExecutionOrder() ([]string, error) {
 		}
 
 		recStack[stepID] = false
+		visited[stepID] = true
 		order = append(order, stepID)
 		return nil
 	}
 
 	for _, step := range r.plan.Steps {
-		err := visit(step.ID)
-		if err != nil {
-			return nil, err
+		if !visited[step.ID] {
+			err := visit(step.ID)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
