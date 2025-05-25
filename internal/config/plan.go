@@ -19,15 +19,15 @@ type ExecutorConfig struct {
 
 // Step represents a single execution step
 type Step struct {
-	ID             string         `yaml:"id"`
-	Description    string         `yaml:"description"`
-	Executor       string         `yaml:"executor"`
-	DependsOn      []string       `yaml:"depends_on,omitempty"`
-	SkipIf         string         `yaml:"skip_if,omitempty"`
-	CheckCommand   string         `yaml:"check_command,omitempty"`
-	WorkDirectory  string         `yaml:"work_directory,omitempty"`
-	Files          []FileConfig   `yaml:"files"`
-	TransactionMode string        `yaml:"transaction_mode,omitempty"`
+	ID              string       `yaml:"id"`
+	Description     string       `yaml:"description"`
+	Executor        string       `yaml:"executor"`
+	DependsOn       []string     `yaml:"depends_on,omitempty"`
+	SkipIf          string       `yaml:"skip_if,omitempty"`
+	CheckCommand    string       `yaml:"check_command,omitempty"`
+	WorkDirectory   string       `yaml:"work_directory,omitempty"`
+	Files           []FileConfig `yaml:"files"`
+	TransactionMode string       `yaml:"transaction_mode,omitempty"`
 }
 
 // FileConfig represents the configuration for a file to be executed

@@ -149,7 +149,7 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 		if workDir == "" {
 			workDir = r.plan.WorkDirectory
 		}
-		
+
 		file := executors.ExecutionFile{
 			Path:          fileConfig.Path,
 			Timeout:       fileConfig.Timeout,
@@ -169,7 +169,7 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 		}
 
 		fmt.Printf("  ✓ Success (%dms)\n", result.Duration)
-		
+
 		// Show output if available
 		if result.Output != "" {
 			fmt.Println("  Output:")
