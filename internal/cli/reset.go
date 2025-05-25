@@ -44,7 +44,7 @@ func runReset(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		if response != "y" && response != "Y" {
-			fmt.Println("Reset cancelled.")
+			fmt.Println("Reset canceled.")
 			return nil
 		}
 	}

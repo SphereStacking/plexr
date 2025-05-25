@@ -41,7 +41,7 @@ func NewExecuteCommand() *cobra.Command {
 func runExecute(cmd *cobra.Command, args []string) error {
 	// Print logo
 	printLogo()
-	
+
 	planFile := args[0]
 
 	// Initialize logger
@@ -86,7 +86,7 @@ func runExecute(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		if response != "y" && response != "Y" {
-			fmt.Println("Execution cancelled.")
+			fmt.Println("Execution canceled.")
 			return nil
 		}
 	}

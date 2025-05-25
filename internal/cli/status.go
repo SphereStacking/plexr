@@ -78,8 +78,12 @@ func runStatus(cmd *cobra.Command, args []string) error {
 	// Show raw JSON if verbose
 	if verbose {
 		fmt.Println("\n📄 Raw State:")
-		data, _ := json.MarshalIndent(state, "", "  ")
-		fmt.Println(string(data))
+		data, err := json.MarshalIndent(state, "", "  ")
+		if err != nil {
+			fmt.Printf("Error marshaling state: %v\n", err)
+		} else {
+			fmt.Println(string(data))
+		}
 	}
 
 	return nil
