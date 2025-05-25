@@ -47,3 +47,6 @@ logs/
 # Test artifacts
 coverage.txt
 coverage.html
+
+# Development tools
+.tools/

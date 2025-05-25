@@ -24,7 +24,18 @@ LDFLAGS=-ldflags "-X main.Version=$(VERSION) -X main.Commit=$(COMMIT) -X main.Bu
 GOOS?=$(shell go env GOOS)
 GOARCH?=$(shell go env GOARCH)
 
-.PHONY: all build clean test coverage deps run help
+# Tool versions
+GOLANGCI_LINT_VERSION=v1.61.0
+
+# Tool paths
+TOOLS_DIR=.tools
+GOLANGCI_LINT=$(TOOLS_DIR)/golangci-lint
+GOIMPORTS=$(shell which goimports 2>/dev/null || echo "$(GOPATH)/bin/goimports")
+
+# Git hooks
+HOOKS_DIR=.githooks
+
+.PHONY: all build clean test coverage deps run help lint fmt fmt-check vet tools dev-setup install hooks
 
 ## help: Display this help message
 help:
@@ -87,21 +98,58 @@ install: build
 	@cp $(BUILD_DIR)/$(BINARY_NAME) $(GOPATH)/bin/$(BINARY_NAME)
 
 ## dev-setup: Setup development environment
-dev-setup:
-	@echo "Setting up development environment..."
-	$(GOGET) -u github.com/golangci/golangci-lint/cmd/golangci-lint
-	$(GOGET) -u github.com/goreleaser/goreleaser
+dev-setup: tools hooks
+	@echo "Setting up Go workspace..."
+	@go mod download
 	@echo "Development environment ready!"
+	@echo ""
+	@echo "VSCode users: Install recommended extensions when prompted"
+	@echo "Run 'code .' to open in VSCode"
+
+## tools: Install development tools
+tools: $(GOLANGCI_LINT) goimports
+
+$(GOLANGCI_LINT):
+	@echo "Installing golangci-lint $(GOLANGCI_LINT_VERSION)..."
+	@mkdir -p $(TOOLS_DIR)
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(TOOLS_DIR) $(GOLANGCI_LINT_VERSION)
+	@echo "golangci-lint installed!"
+
+## goimports: Install goimports
+goimports:
+	@if ! command -v goimports &> /dev/null; then \
+		echo "Installing goimports..."; \
+		$(GOCMD) install golang.org/x/tools/cmd/goimports@latest; \
+	fi
+
+## hooks: Install git hooks
+hooks:
+	@echo "Installing git hooks..."
+	@git config core.hooksPath $(HOOKS_DIR)
+	@echo "Git hooks installed!"
 
 ## lint: Run linters
-lint:
+lint: $(GOLANGCI_LINT)
 	@echo "Running linters..."
-	golangci-lint run
+	$(GOLANGCI_LINT) run
 
 ## fmt: Format code
 fmt:
 	@echo "Formatting code..."
 	$(GOCMD) fmt ./...
+	@echo "Running goimports..."
+	@which goimports > /dev/null 2>&1 || $(GOCMD) install golang.org/x/tools/cmd/goimports@latest
+	@export PATH="$$PATH:$$(go env GOPATH)/bin" && goimports -w .
+
+## fmt-check: Check if code is formatted
+fmt-check:
+	@echo "Checking code formatting..."
+	@if [ -n "$$(gofmt -l .)" ]; then \
+		echo "The following files are not formatted:"; \
+		gofmt -l .; \
+		exit 1; \
+	fi
+	@echo "All files are properly formatted!"
 
 ## vet: Run go vet
 vet:

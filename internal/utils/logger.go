@@ -28,7 +28,12 @@ func InitLogger(debug bool) error {
 func GetLogger() *zap.Logger {
 	if Logger == nil {
 		// Create a default logger if not initialized
-		Logger, _ = zap.NewProduction()
+		var err error
+		Logger, err = zap.NewProduction()
+		if err != nil {
+			// Fallback to a no-op logger
+			Logger = zap.NewNop()
+		}
 	}
 	return Logger
 }
