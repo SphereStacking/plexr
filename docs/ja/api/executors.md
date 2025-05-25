@@ -28,22 +28,62 @@ steps:
     workdir: ./src
 ```
 
-### SQLエグゼキューター（計画中）
+### SQLエグゼキューター
 
-さまざまなデータベースに対してSQLクエリを実行。
+PostgreSQLデータベースに対してSQLクエリを実行（MySQLとSQLiteのサポートは計画中）。
+
+#### 設定
+
+`executors`セクションでSQLエグゼキューターを定義：
+
+```yaml
+executors:
+  db:
+    type: sql
+    driver: postgres
+    host: ${DB_HOST:-localhost}
+    port: ${DB_PORT:-5432}
+    database: ${DB_NAME:-myapp}
+    username: ${DB_USER:-postgres}
+    password: ${DB_PASSWORD}
+    sslmode: ${DB_SSLMODE:-disable}
+```
+
+#### 使用方法
 
 ```yaml
 steps:
   - name: "マイグレーションを実行"
-    executor: sql
-    config:
-      driver: postgres
-      connection: "postgres://user:pass@localhost/db"
-    command: |
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255)
-      );
+    executor: db
+    files:
+      - path: sql/001_schema.sql
+        timeout: 30
+    transaction_mode: all  # オプション: none, each, all
+```
+
+#### トランザクションモード
+
+- `none`: トランザクションなし
+- `each`: 各SQLステートメントが独自のトランザクション内で実行（デフォルト）
+- `all`: すべてのステートメントが単一のトランザクション内で実行
+
+#### 複数のデータベース
+
+異なるデータベース用に複数のSQLエグゼキューターを定義できます：
+
+```yaml
+executors:
+  main_db:
+    type: sql
+    driver: postgres
+    database: myapp_main
+    # ... 接続詳細
+    
+  analytics_db:
+    type: sql
+    driver: postgres
+    database: myapp_analytics
+    # ... 接続詳細
 ```
 
 ## カスタムエグゼキューター

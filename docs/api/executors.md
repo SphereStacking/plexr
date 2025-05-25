@@ -28,22 +28,62 @@ steps:
     workdir: ./src
 ```
 
-### SQL Executor (Planned)
+### SQL Executor
 
-Execute SQL queries against various databases.
+Execute SQL queries against PostgreSQL databases (MySQL and SQLite support planned).
+
+#### Configuration
+
+Define SQL executors in the `executors` section:
+
+```yaml
+executors:
+  db:
+    type: sql
+    driver: postgres
+    host: ${DB_HOST:-localhost}
+    port: ${DB_PORT:-5432}
+    database: ${DB_NAME:-myapp}
+    username: ${DB_USER:-postgres}
+    password: ${DB_PASSWORD}
+    sslmode: ${DB_SSLMODE:-disable}
+```
+
+#### Usage
 
 ```yaml
 steps:
   - name: "Run migrations"
-    executor: sql
-    config:
-      driver: postgres
-      connection: "postgres://user:pass@localhost/db"
-    command: |
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255)
-      );
+    executor: db
+    files:
+      - path: sql/001_schema.sql
+        timeout: 30
+    transaction_mode: all  # Options: none, each, all
+```
+
+#### Transaction Modes
+
+- `none`: No transaction wrapping
+- `each`: Each SQL statement in its own transaction (default)
+- `all`: All statements in a single transaction
+
+#### Multiple Databases
+
+You can define multiple SQL executors for different databases:
+
+```yaml
+executors:
+  main_db:
+    type: sql
+    driver: postgres
+    database: myapp_main
+    # ... connection details
+    
+  analytics_db:
+    type: sql
+    driver: postgres
+    database: myapp_analytics
+    # ... connection details
 ```
 
 ## Custom Executors
