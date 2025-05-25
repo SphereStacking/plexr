@@ -13,6 +13,7 @@ steps: array<Step>
 
 # Optional fields
 description: string
+work_directory: string
 platforms: map<string, map<string, string>>
 ```
 
@@ -47,6 +48,15 @@ description: |
   - Required tools and dependencies
   - Database initialization
   - Configuration files
+```
+
+### work_directory
+
+**Type:** `string` (optional)  
+**Description:** Default working directory for all steps
+
+```yaml
+work_directory: "/path/to/project"
 ```
 
 ### executors
@@ -213,6 +223,15 @@ check_command: "docker --version"
 
 ```yaml
 transaction_mode: all
+```
+
+### work_directory
+
+**Type:** `string` (optional)  
+**Description:** Working directory for this step (overrides global setting)
+
+```yaml
+work_directory: "/tmp/build"
 ```
 
 ## FileConfig

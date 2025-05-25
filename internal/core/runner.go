@@ -141,11 +141,18 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 	}
 
 	for _, fileConfig := range step.Files {
+		// Use step work_directory if specified, otherwise use global work_directory
+		workDir := step.WorkDirectory
+		if workDir == "" {
+			workDir = r.plan.WorkDirectory
+		}
+		
 		file := executors.ExecutionFile{
-			Path:     fileConfig.Path,
-			Timeout:  fileConfig.Timeout,
-			Retry:    fileConfig.Retry,
-			Platform: fileConfig.Platform,
+			Path:          fileConfig.Path,
+			Timeout:       fileConfig.Timeout,
+			Retry:         fileConfig.Retry,
+			Platform:      fileConfig.Platform,
+			WorkDirectory: workDir,
 		}
 
 		fmt.Printf("  Executing file: %s\n", file.Path)
@@ -159,6 +166,12 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 		}
 
 		fmt.Printf("  ✓ Success (%dms)\n", result.Duration)
+		
+		// Show output if available
+		if result.Output != "" {
+			fmt.Println("  Output:")
+			fmt.Println(result.Output)
+		}
 	}
 
 	return nil

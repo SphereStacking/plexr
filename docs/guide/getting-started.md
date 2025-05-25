@@ -159,6 +159,24 @@ steps:
       - path: "scripts/install_docker.sh"
 ```
 
+### 5. Working Directory
+
+Control where scripts execute:
+
+```yaml
+# Global working directory for all steps
+work_directory: "/path/to/project"
+
+steps:
+  - id: build
+    description: "Build project"
+    executor: shell
+    # Override for specific step
+    work_directory: "/tmp/build"
+    files:
+      - path: "scripts/build.sh"
+```
+
 ## Next Steps
 
 Now that you understand the basics:

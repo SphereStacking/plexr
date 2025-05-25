@@ -12,10 +12,11 @@ import (
 
 // ExecutionFile represents a file to be executed
 type ExecutionFile struct {
-	Path     string
-	Timeout  int
-	Retry    int
-	Platform string
+	Path          string
+	Timeout       int
+	Retry         int
+	Platform      string
+	WorkDirectory string
 }
 
 // ExecutionResult represents the result of executing a file
@@ -93,6 +94,11 @@ func (e *ShellExecutor) Execute(ctx context.Context, file ExecutionFile) (*Execu
 		cmd = exec.CommandContext(execCtx, e.shell, "-File", file.Path)
 	} else {
 		cmd = exec.CommandContext(execCtx, e.shell, file.Path)
+	}
+
+	// Set working directory if specified
+	if file.WorkDirectory != "" {
+		cmd.Dir = file.WorkDirectory
 	}
 
 	// Capture output

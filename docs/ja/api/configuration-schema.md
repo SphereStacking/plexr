@@ -13,6 +13,7 @@ steps: array<Step>
 
 # オプションフィールド
 description: string
+work_directory: string
 platforms: map<string, map<string, string>>
 ```
 
@@ -47,6 +48,15 @@ description: |
   - 必要なツールと依存関係
   - データベースの初期化
   - 設定ファイル
+```
+
+### work_directory
+
+**型:** `string`（オプション）  
+**説明:** すべてのステップのデフォルト作業ディレクトリ
+
+```yaml
+work_directory: "/path/to/project"
 ```
 
 ### executors
@@ -213,6 +223,15 @@ check_command: "docker --version"
 
 ```yaml
 transaction_mode: all
+```
+
+### work_directory
+
+**型:** `string`（オプション）  
+**説明:** このステップの作業ディレクトリ（グローバル設定を上書き）
+
+```yaml
+work_directory: "/tmp/build"
 ```
 
 ## FileConfig

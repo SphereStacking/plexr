@@ -159,6 +159,24 @@ steps:
       - path: "scripts/install_docker.sh"
 ```
 
+### 5. 作業ディレクトリ
+
+スクリプトの実行場所を制御：
+
+```yaml
+# すべてのステップのグローバル作業ディレクトリ
+work_directory: "/path/to/project"
+
+steps:
+  - id: build
+    description: "プロジェクトのビルド"
+    executor: shell
+    # 特定のステップで上書き
+    work_directory: "/tmp/build"
+    files:
+      - path: "scripts/build.sh"
+```
+
 ## 次のステップ
 
 基本を理解したら：

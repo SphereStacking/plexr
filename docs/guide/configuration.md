@@ -70,6 +70,16 @@ description: |
   - Redis cache
 ```
 
+### work_directory (Optional)
+
+Set the default working directory for all steps:
+
+```yaml
+work_directory: /path/to/project
+```
+
+This can be overridden at the step level.
+
 ## Executors
 
 Executors define how different types of files are executed.
@@ -181,6 +191,14 @@ Command to verify if step is already completed:
 
 ```yaml
 check_command: "docker --version"
+```
+
+#### work_directory (Optional)
+
+Working directory for this step (overrides global setting):
+
+```yaml
+work_directory: "/tmp/build"
 ```
 
 ## File Configuration

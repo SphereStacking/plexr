@@ -70,6 +70,16 @@ description: |
   - Redisキャッシュ
 ```
 
+### work_directory（オプション）
+
+すべてのステップのデフォルト作業ディレクトリを設定：
+
+```yaml
+work_directory: /path/to/project
+```
+
+これはステップレベルで上書きできます。
+
 ## エグゼキューター
 
 エグゼキューターは、異なるタイプのファイルがどのように実行されるかを定義します。
@@ -181,6 +191,14 @@ skip_if: "test -f /usr/local/bin/node"
 
 ```yaml
 check_command: "docker --version"
+```
+
+#### work_directory（オプション）
+
+このステップの作業ディレクトリ（グローバル設定を上書き）：
+
+```yaml
+work_directory: "/tmp/build"
 ```
 
 ## ファイル設定
