@@ -22,7 +22,7 @@ builds:
       - -s -w
       - -X main.version={{.Version}}
       - -X main.commit={{.Commit}}
-      - -X main.date={{.Date}}
+      - -X main.buildTime={{.Date}}
 
 archives:
   - id: plexr
