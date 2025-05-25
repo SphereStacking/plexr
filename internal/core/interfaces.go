@@ -12,3 +12,9 @@ type Executor interface {
 	Execute(ctx context.Context, file executors.ExecutionFile) (*executors.ExecutionResult, error)
 	Validate(config map[string]interface{}) error
 }
+
+// Ensure our executors implement the interface
+var (
+	_ Executor = (*executors.ShellExecutor)(nil)
+	_ Executor = (*executors.SQLExecutor)(nil)
+)

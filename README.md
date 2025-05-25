@@ -137,13 +137,15 @@ Plexr is currently in active development. This project was created through vibe 
 ### Currently Implemented
 - [x] Core execution engine
 - [x] Shell executor
+- [x] SQL executor (PostgreSQL)
 - [x] State management
 - [x] Basic CLI commands (execute, validate, status, reset)
 - [x] YAML configuration parsing
 - [x] Dependency resolution
+- [x] Shell completion support
 
 ### In Progress / Not Yet Implemented
-- [ ] SQL executor (documented but not implemented)
+- [ ] SQL executor for other databases (MySQL, SQLite)
 - [ ] Platform detection (partial implementation)
 - [ ] Interactive help system
 - [ ] Plugin system

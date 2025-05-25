@@ -1,0 +1,39 @@
+name: "Database Setup Example"
+version: "1.0.0"
+description: "Example of using SQL executor to set up a PostgreSQL database"
+platform: "linux,darwin"
+
+executors:
+  sql:
+    type: sql
+    driver: postgres
+    host: ${DB_HOST:-localhost}
+    port: ${DB_PORT:-5432}
+    database: ${DB_NAME:-myapp_dev}
+    username: ${DB_USER:-postgres}
+    password: ${DB_PASSWORD}
+    sslmode: ${DB_SSLMODE:-disable}
+
+steps:
+  - id: create_schema
+    description: "Create database schema"
+    executor: sql
+    files:
+      - path: sql/001_schema.sql
+        timeout: 30
+
+  - id: create_indexes
+    description: "Create database indexes"
+    executor: sql
+    depends_on: [create_schema]
+    files:
+      - path: sql/002_indexes.sql
+        timeout: 30
+
+  - id: seed_data
+    description: "Insert initial seed data"
+    executor: sql
+    depends_on: [create_indexes]
+    files:
+      - path: sql/003_seed_data.sql
+        timeout: 60

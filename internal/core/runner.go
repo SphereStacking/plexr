@@ -34,6 +34,7 @@ func NewRunner(plan *config.ExecutionPlan, stateFile string) (*Runner, error) {
 
 	// Register built-in executors
 	r.executors["shell"] = executors.NewShellExecutor()
+	r.executors["sql"] = executors.NewSQLExecutor()
 
 	return r, nil
 }
