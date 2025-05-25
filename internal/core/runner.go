@@ -36,6 +36,48 @@ func NewRunner(plan *config.ExecutionPlan, stateFile string) (*Runner, error) {
 	r.executors["shell"] = executors.NewShellExecutor()
 	r.executors["sql"] = executors.NewSQLExecutor()
 
+	// Initialize and validate executors with their configurations
+	if plan.Executors != nil {
+		for name, config := range plan.Executors {
+			executorType, ok := config["type"].(string)
+			if !ok {
+				return nil, fmt.Errorf("executor %s missing type field", name)
+			}
+
+			// Skip if it's already registered (e.g., from tests)
+			if _, exists := r.executors[name]; exists {
+				continue
+			}
+
+			// Get the executor by type
+			baseExecutor, ok := r.executors[executorType]
+			if !ok {
+				// If not a built-in type, skip - it might be registered later in tests
+				continue
+			}
+
+			// For SQL executor, create a new instance for each configuration
+			var executor Executor
+			if executorType == "sql" {
+				sqlExecutor := executors.NewSQLExecutor()
+				// Validate the configuration
+				if err := sqlExecutor.Validate(config); err != nil {
+					return nil, fmt.Errorf("invalid configuration for executor %s: %w", name, err)
+				}
+				executor = sqlExecutor
+			} else {
+				// For other executors, validate with the base executor
+				if err := baseExecutor.Validate(config); err != nil {
+					return nil, fmt.Errorf("invalid configuration for executor %s: %w", name, err)
+				}
+				executor = baseExecutor
+			}
+
+			// Store the configured executor with the custom name
+			r.executors[name] = executor
+		}
+	}
+
 	return r, nil
 }
 
@@ -152,11 +194,12 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 		}
 
 		file := executors.ExecutionFile{
-			Path:          fileConfig.Path,
-			Timeout:       fileConfig.Timeout,
-			Retry:         fileConfig.Retry,
-			Platform:      fileConfig.Platform,
-			WorkDirectory: workDir,
+			Path:            fileConfig.Path,
+			Timeout:         fileConfig.Timeout,
+			Retry:           fileConfig.Retry,
+			Platform:        fileConfig.Platform,
+			WorkDirectory:   workDir,
+			TransactionMode: step.TransactionMode,
 		}
 
 		fmt.Printf("  Executing file: %s\n", file.Path)

@@ -79,7 +79,7 @@ func TestRunner(t *testing.T) {
 			Version:     "1.0.0",
 			Description: `Test plan for runner tests`,
 			Executors: map[string]config.ExecutorConfig{
-				"shell": {Type: "shell"},
+				"shell": {"type": "shell"},
 			},
 			Steps: []config.Step{
 				{
@@ -141,7 +141,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Single Step Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -195,7 +195,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Dependency Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -252,7 +252,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Circular Dependency Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -307,7 +307,7 @@ func TestRunner(t *testing.T) {
 			Version:       "1.0.0",
 			WorkDirectory: globalWorkDir,
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -371,7 +371,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Resume Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -429,7 +429,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Skip If Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -494,7 +494,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Multi File Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -544,7 +544,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Failure Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -611,7 +611,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Cancellation Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"mock": {Type: "mock"},
+				"mock": {"type": "mock"},
 			},
 			Steps: []config.Step{
 				{
@@ -673,7 +673,7 @@ func TestRunner(t *testing.T) {
 			Name:    "Missing Executor Test",
 			Version: "1.0.0",
 			Executors: map[string]config.ExecutorConfig{
-				"nonexistent": {Type: "nonexistent"},
+				"nonexistent": {"type": "nonexistent"},
 			},
 			Steps: []config.Step{
 				{
