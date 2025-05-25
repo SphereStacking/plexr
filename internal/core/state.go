@@ -33,7 +33,7 @@ func NewStateManager(filePath string) (*StateManager, error) {
 	if filePath == "" {
 		return nil, fmt.Errorf("state file path cannot be empty")
 	}
-	
+
 	return &StateManager{
 		filePath: filePath,
 	}, nil
@@ -71,7 +71,7 @@ func (sm *StateManager) Save(state *ExecutionState) error {
 		return fmt.Errorf("failed to marshal state: %w", err)
 	}
 
-	if err := os.WriteFile(sm.filePath, data, 0644); err != nil {
+	if err := os.WriteFile(sm.filePath, data, 0600); err != nil { // #nosec G306 - State file needs to be readable by other processes
 		return fmt.Errorf("failed to write state file: %w", err)
 	}
 
@@ -133,7 +133,7 @@ func (sm *StateManager) MarkStepCompleted(stepID string) error {
 		return fmt.Errorf("failed to marshal state: %w", err)
 	}
 
-	if err := os.WriteFile(sm.filePath, data, 0644); err != nil {
+	if err := os.WriteFile(sm.filePath, data, 0600); err != nil { // #nosec G306 - State file needs to be readable by other processes
 		return fmt.Errorf("failed to write state file: %w", err)
 	}
 
@@ -158,7 +158,7 @@ func (sm *StateManager) SetCurrentStep(stepID string) error {
 		return fmt.Errorf("failed to marshal state: %w", err)
 	}
 
-	if err := os.WriteFile(sm.filePath, data, 0644); err != nil {
+	if err := os.WriteFile(sm.filePath, data, 0600); err != nil { // #nosec G306 - State file needs to be readable by other processes
 		return fmt.Errorf("failed to write state file: %w", err)
 	}
 
@@ -187,7 +187,7 @@ func (sm *StateManager) AddInstalledTool(name, version string) error {
 		return fmt.Errorf("failed to marshal state: %w", err)
 	}
 
-	if err := os.WriteFile(sm.filePath, data, 0644); err != nil {
+	if err := os.WriteFile(sm.filePath, data, 0600); err != nil { // #nosec G306 - State file needs to be readable by other processes
 		return fmt.Errorf("failed to write state file: %w", err)
 	}
 

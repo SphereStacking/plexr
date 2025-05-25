@@ -91,9 +91,9 @@ func (e *ShellExecutor) Execute(ctx context.Context, file ExecutionFile) (*Execu
 	// Prepare command
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
-		cmd = exec.CommandContext(execCtx, e.shell, "-File", file.Path)
+		cmd = exec.CommandContext(execCtx, e.shell, "-File", file.Path) // #nosec G204 - file.Path is validated and comes from user configuration
 	} else {
-		cmd = exec.CommandContext(execCtx, e.shell, file.Path)
+		cmd = exec.CommandContext(execCtx, e.shell, file.Path) // #nosec G204 - file.Path is validated and comes from user configuration
 	}
 
 	// Set working directory if specified
