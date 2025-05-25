@@ -1,0 +1,96 @@
+name: "Multi-Database Setup Example"
+version: "1.0.0"
+description: "Example of using multiple databases with SQL executor"
+platform: "linux,darwin"
+
+executors:
+  # メインアプリケーションデータベース
+  main_db:
+    type: sql
+    driver: postgres
+    host: ${MAIN_DB_HOST:-localhost}
+    port: ${MAIN_DB_PORT:-5432}
+    database: ${MAIN_DB_NAME:-myapp}
+    username: ${MAIN_DB_USER:-postgres}
+    password: ${MAIN_DB_PASSWORD}
+    sslmode: ${MAIN_DB_SSLMODE:-disable}
+  
+  # 分析用データベース
+  analytics_db:
+    type: sql
+    driver: postgres
+    host: ${ANALYTICS_DB_HOST:-localhost}
+    port: ${ANALYTICS_DB_PORT:-5432}
+    database: ${ANALYTICS_DB_NAME:-myapp_analytics}
+    username: ${ANALYTICS_DB_USER:-postgres}
+    password: ${ANALYTICS_DB_PASSWORD}
+    sslmode: ${ANALYTICS_DB_SSLMODE:-disable}
+  
+  # ログ用データベース
+  log_db:
+    type: sql
+    driver: postgres
+    host: ${LOG_DB_HOST:-localhost}
+    port: ${LOG_DB_PORT:-5432}
+    database: ${LOG_DB_NAME:-myapp_logs}
+    username: ${LOG_DB_USER:-postgres}
+    password: ${LOG_DB_PASSWORD}
+    sslmode: ${LOG_DB_SSLMODE:-disable}
+
+steps:
+  # メインデータベースのセットアップ
+  - id: create_main_schema
+    description: "Create main application schema"
+    executor: main_db
+    files:
+      - path: sql/main/001_schema.sql
+        timeout: 30
+
+  - id: create_main_indexes
+    description: "Create main database indexes"
+    executor: main_db
+    depends_on: [create_main_schema]
+    files:
+      - path: sql/main/002_indexes.sql
+        timeout: 30
+
+  # 分析データベースのセットアップ
+  - id: create_analytics_schema
+    description: "Create analytics schema"
+    executor: analytics_db
+    files:
+      - path: sql/analytics/001_schema.sql
+        timeout: 30
+
+  - id: create_analytics_views
+    description: "Create analytics views"
+    executor: analytics_db
+    depends_on: [create_analytics_schema]
+    files:
+      - path: sql/analytics/002_views.sql
+        timeout: 30
+
+  # ログデータベースのセットアップ
+  - id: create_log_schema
+    description: "Create log tables"
+    executor: log_db
+    files:
+      - path: sql/logs/001_schema.sql
+        timeout: 30
+
+  - id: create_log_partitions
+    description: "Create log table partitions"
+    executor: log_db
+    depends_on: [create_log_schema]
+    files:
+      - path: sql/logs/002_partitions.sql
+        timeout: 30
+
+  # データベース間の連携設定
+  - id: setup_foreign_data_wrapper
+    description: "Setup foreign data wrapper for analytics"
+    executor: analytics_db
+    depends_on: [create_main_schema, create_analytics_schema]
+    files:
+      - path: sql/analytics/003_fdw.sql
+        timeout: 60
