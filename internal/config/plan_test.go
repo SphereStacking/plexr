@@ -92,8 +92,8 @@ steps:
 
 				// Executors
 				assert.Len(t, plan.Executors, 2)
-				assert.Equal(t, "shell", plan.Executors["shell"].Type)
-				assert.Equal(t, "custom", plan.Executors["custom"].Type)
+				assert.Equal(t, "shell", plan.Executors["shell"]["type"])
+				assert.Equal(t, "custom", plan.Executors["custom"]["type"])
 
 				// Steps
 				assert.Len(t, plan.Steps, 3)
@@ -474,7 +474,7 @@ func TestValidateExecutionPlan(t *testing.T) {
 			Name:    "Test",
 			Version: "1.0.0",
 			Executors: map[string]ExecutorConfig{
-				"": {Type: "shell"}, // Empty key
+				"": {"type": "shell"}, // Empty key
 			},
 			Steps: []Step{
 				{
@@ -510,7 +510,7 @@ func TestValidateExecutionPlan(t *testing.T) {
 					Name:    "Test",
 					Version: "1.0.0",
 					Executors: map[string]ExecutorConfig{
-						"shell": {Type: "shell"},
+						"shell": {"type": "shell"},
 					},
 					Steps: []Step{
 						{
@@ -541,23 +541,19 @@ func TestExecutorConfig(t *testing.T) {
 			{
 				name: "simple config",
 				config: ExecutorConfig{
-					Type: "shell",
-					Config: map[string]interface{}{
-						"shell": "/bin/bash",
-					},
+					"type":  "shell",
+					"shell": "/bin/bash",
 				},
 			},
 			{
 				name: "complex config",
 				config: ExecutorConfig{
-					Type: "custom",
-					Config: map[string]interface{}{
-						"timeout": 300,
-						"env": map[string]string{
-							"KEY": "value",
-						},
-						"options": []string{"opt1", "opt2"},
+					"type":    "custom",
+					"timeout": 300,
+					"env": map[string]string{
+						"KEY": "value",
 					},
+					"options": []string{"opt1", "opt2"},
 				},
 			},
 		}
@@ -565,8 +561,8 @@ func TestExecutorConfig(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				// This would test YAML marshaling if ExecutorConfig had custom methods
-				assert.Equal(t, tt.config.Type, tt.config.Type)
-				assert.NotNil(t, tt.config.Config)
+				assert.Equal(t, tt.config["type"], tt.config["type"])
+				assert.NotNil(t, tt.config)
 			})
 		}
 	})
@@ -578,7 +574,7 @@ func TestStepDependencyGraph(t *testing.T) {
 			Name:    "Complex Graph",
 			Version: "1.0.0",
 			Executors: map[string]ExecutorConfig{
-				"shell": {Type: "shell"},
+				"shell": {"type": "shell"},
 			},
 			Steps: []Step{
 				// Diamond dependency pattern

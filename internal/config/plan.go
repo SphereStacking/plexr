@@ -12,10 +12,7 @@ type ExecutionPlan struct {
 }
 
 // ExecutorConfig represents the configuration for an executor
-type ExecutorConfig struct {
-	Type   string                 `yaml:"type"`
-	Config map[string]interface{} `yaml:",inline"`
-}
+type ExecutorConfig map[string]interface{}
 
 // Step represents a single execution step
 type Step struct {
