@@ -32,7 +32,7 @@ func ValidateExecutionPlan(plan *ExecutionPlan) error {
 	if plan == nil {
 		return fmt.Errorf("plan is nil")
 	}
-	
+
 	if plan.Name == "" {
 		return fmt.Errorf("name is required")
 	}
@@ -90,7 +90,7 @@ func ValidateExecutionPlan(plan *ExecutionPlan) error {
 			if strings.Contains(file.Path, "..") {
 				return fmt.Errorf("file path cannot contain '..' in step '%s': %s", step.ID, file.Path)
 			}
-			
+
 			// Validate platform
 			if !validPlatforms[file.Platform] {
 				return fmt.Errorf("invalid platform '%s' in step '%s'", file.Platform, step.ID)
@@ -99,10 +99,10 @@ func ValidateExecutionPlan(plan *ExecutionPlan) error {
 
 		// Validate transaction mode
 		validTransactionModes := map[string]bool{
-			"":       true, // empty is valid (no transaction mode)
-			"none":   true,
-			"each":   true,
-			"all":    true,
+			"":     true, // empty is valid (no transaction mode)
+			"none": true,
+			"each": true,
+			"all":  true,
 		}
 		if !validTransactionModes[step.TransactionMode] {
 			return fmt.Errorf("invalid transaction_mode '%s' in step '%s'", step.TransactionMode, step.ID)
