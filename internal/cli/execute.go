@@ -39,6 +39,9 @@ func NewExecuteCommand() *cobra.Command {
 }
 
 func runExecute(cmd *cobra.Command, args []string) error {
+	// Print logo
+	printLogo()
+	
 	planFile := args[0]
 
 	// Initialize logger

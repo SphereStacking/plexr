@@ -9,8 +9,21 @@ import (
 
 var (
 	verbose bool
-	version = "dev"
+	version = "0.0.1"
 )
+
+// printLogo prints the ASCII art logo
+func printLogo() {
+	fmt.Print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+	fmt.Printf(`   ____  __    ____  _  _  ____ ` + "\n")
+	fmt.Printf(`  (  _ \(  )  (  __)( \/ )(  _ \` + "\n")
+	fmt.Printf(`   ) __// (_/\ ) _)  )  (  )   /` + "\n")
+	fmt.Printf(`  (___) \____/(____)(_/\_)(__\_)` + "\n")
+	fmt.Println()
+	fmt.Printf("  Plan + Execute v%s \n", version)
+	fmt.Println()
+	fmt.Print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+}
 
 // NewRootCommand creates the root command
 func NewRootCommand() *cobra.Command {
@@ -23,6 +36,10 @@ environments through simple YAML configuration files.
 No more "works on my machine" issues or spending hours following
 outdated setup documentation.`,
 		SilenceUsage: true,
+		Run: func(cmd *cobra.Command, args []string) {
+			printLogo()
+			cmd.Help()
+		},
 	}
 
 	// Global flags
@@ -44,7 +61,7 @@ func NewVersionCommand() *cobra.Command {
 		Use:   "version",
 		Short: "Print version information",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("plexr version %s\n", version)
+			printLogo()
 		},
 	}
 }
