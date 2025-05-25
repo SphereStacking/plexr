@@ -7,9 +7,11 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"time"
 
 	"github.com/SphereStacking/plexr/internal/config"
 	"github.com/SphereStacking/plexr/internal/core"
+	"github.com/SphereStacking/plexr/internal/display"
 	"github.com/SphereStacking/plexr/internal/utils"
 	"github.com/spf13/cobra"
 )
@@ -86,7 +88,8 @@ func runExecute(cmd *cobra.Command, args []string) error {
 
 	if dryRun {
 		fmt.Println("\n🔍 DRY RUN MODE - No changes will be made")
-		return showExecutionPlan(plan)
+		showExecutionPlan(plan)
+		return nil
 	}
 
 	// Create state file path
@@ -98,6 +101,61 @@ func runExecute(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create runner: %w", err)
 	}
+
+	// Create display
+	displayMode := display.ModeSimple
+	disp := display.NewDisplay(displayMode, IsVerbose())
+	if err := disp.Init(context.Background()); err != nil {
+		return fmt.Errorf("failed to initialize display: %w", err)
+	}
+	defer disp.Close()
+
+	// Create progress tracker
+	tracker := display.NewProgressTracker(plan, runner.State(), disp)
+
+	// Update function to refresh state before updating display
+	updateProgress := func() {
+		tracker.SetState(runner.State())
+		if err := tracker.Update(); err != nil && IsVerbose() {
+			fmt.Printf("Warning: failed to update progress display: %v\n", err)
+		}
+	}
+
+	// Set up progress callback
+	runner.SetProgressCallback(func(stepID string, event string, data interface{}) {
+		switch event {
+		case "started":
+			if err := tracker.StepStarted(stepID); err != nil && IsVerbose() {
+				fmt.Printf("Warning: failed to update step started: %v\n", err)
+			}
+		case "completed":
+			if duration, ok := data.(time.Duration); ok {
+				if err := tracker.StepCompleted(stepID, duration); err != nil && IsVerbose() {
+					fmt.Printf("Warning: failed to update step completed: %v\n", err)
+				}
+			}
+		case "failed":
+			if err, ok := data.(error); ok {
+				if trackerErr := tracker.StepFailed(stepID, err); trackerErr != nil && IsVerbose() {
+					fmt.Printf("Warning: failed to update step failed: %v\n", trackerErr)
+				}
+			}
+		case "skipped":
+			if reason, ok := data.(string); ok {
+				if err := tracker.StepSkipped(stepID, reason); err != nil && IsVerbose() {
+					fmt.Printf("Warning: failed to update step skipped: %v\n", err)
+				}
+			}
+		case "output":
+			if output, ok := data.(string); ok {
+				if err := tracker.Output(stepID, output); err != nil && IsVerbose() {
+					fmt.Printf("Warning: failed to show output: %v\n", err)
+				}
+			}
+		}
+		// Update display after each event
+		updateProgress()
+	})
 
 	// Confirm execution
 	if !auto {
@@ -116,16 +174,29 @@ func runExecute(cmd *cobra.Command, args []string) error {
 	// Execute
 	ctx := context.Background()
 	fmt.Println("\n🚀 Starting execution...")
+
+	// Start tracking
+	if err := tracker.Start(); err != nil {
+		return fmt.Errorf("failed to start tracking: %w", err)
+	}
+
+	// Execute with progress tracking
 	err = runner.Execute(ctx)
+	success := err == nil
+
+	// Finish tracking
+	if err := tracker.Finish(success); err != nil {
+		return fmt.Errorf("failed to finish tracking: %w", err)
+	}
+
 	if err != nil {
 		return fmt.Errorf("execution failed: %w", err)
 	}
 
-	fmt.Println("\n✅ Execution completed successfully!")
 	return nil
 }
 
-func showExecutionPlan(plan *config.ExecutionPlan) error {
+func showExecutionPlan(plan *config.ExecutionPlan) {
 	fmt.Println("\n📋 Steps to be executed:")
 	for i, step := range plan.Steps {
 		fmt.Printf("\n%d. %s", i+1, step.ID)
@@ -155,5 +226,4 @@ func showExecutionPlan(plan *config.ExecutionPlan) error {
 			fmt.Println()
 		}
 	}
-	return nil
 }

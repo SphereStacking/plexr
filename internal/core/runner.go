@@ -16,6 +16,8 @@ type Runner struct {
 	stateManager *StateManager
 	executors    map[string]Executor
 	platform     string
+	// Progress tracking
+	progressCallback func(stepID string, event string, data interface{})
 }
 
 // NewRunner creates a new runner
@@ -93,6 +95,24 @@ func (r *Runner) RegisterExecutor(name string, executor Executor) error {
 	return nil
 }
 
+// SetProgressCallback sets a callback function for progress notifications
+func (r *Runner) SetProgressCallback(callback func(stepID string, event string, data interface{})) {
+	r.progressCallback = callback
+}
+
+// notifyProgress sends a progress notification if a callback is registered
+func (r *Runner) notifyProgress(stepID string, event string, data interface{}) {
+	if r.progressCallback != nil {
+		r.progressCallback(stepID, event, data)
+	}
+}
+
+// State returns the current execution state
+func (r *Runner) State() *ExecutionState {
+	state, _ := r.stateManager.Load()
+	return state
+}
+
 // Execute runs the execution plan
 func (r *Runner) Execute(ctx context.Context) error {
 	// Load or create state
@@ -128,7 +148,7 @@ func (r *Runner) Execute(ctx context.Context) error {
 
 		// Check if already completed
 		if r.stateManager.IsStepCompleted(stepID) {
-			fmt.Printf("Skipping completed step: %s\n", stepID)
+			r.notifyProgress(stepID, "skipped", map[string]interface{}{"reason": "already_completed"})
 			continue
 		}
 
@@ -147,7 +167,7 @@ func (r *Runner) Execute(ctx context.Context) error {
 			}
 
 			if shouldSkip {
-				fmt.Printf("Skipping step %s due to skip_if condition\n", stepID)
+				r.notifyProgress(stepID, "skipped", map[string]interface{}{"reason": "skip_if_condition", "condition": step.SkipIf})
 				// Mark as completed even if skipped
 				err = r.stateManager.MarkStepCompleted(stepID)
 				if err != nil {
@@ -160,6 +180,7 @@ func (r *Runner) Execute(ctx context.Context) error {
 		// Execute step
 		err = r.executeStep(ctx, step)
 		if err != nil {
+			r.notifyProgress(stepID, "failed", map[string]interface{}{"error": err.Error()})
 			return fmt.Errorf("failed to execute step %s: %w", stepID, err)
 		}
 
@@ -168,6 +189,7 @@ func (r *Runner) Execute(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("failed to mark step %s as completed: %w", stepID, err)
 		}
+		r.notifyProgress(stepID, "completed", nil)
 	}
 
 	return nil
@@ -180,7 +202,7 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 		return fmt.Errorf("executor not found: %s", step.Executor)
 	}
 
-	fmt.Printf("\nExecuting step: %s - %s\n", step.ID, step.Description)
+	r.notifyProgress(step.ID, "started", map[string]interface{}{"description": step.Description})
 	err := r.stateManager.SetCurrentStep(step.ID)
 	if err != nil {
 		return err
@@ -202,7 +224,7 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 			TransactionMode: step.TransactionMode,
 		}
 
-		fmt.Printf("  Executing file: %s\n", file.Path)
+		r.notifyProgress(step.ID, "executing_file", map[string]interface{}{"file": file.Path})
 		result, err := executor.Execute(ctx, file)
 		if err != nil {
 			return err
@@ -212,12 +234,9 @@ func (r *Runner) executeStep(ctx context.Context, step *config.Step) error {
 			return fmt.Errorf("execution failed")
 		}
 
-		fmt.Printf("  ✓ Success (%dms)\n", result.Duration)
-
 		// Show output if available
 		if result.Output != "" {
-			fmt.Println("  Output:")
-			fmt.Println(result.Output)
+			r.notifyProgress(step.ID, "output", map[string]interface{}{"output": result.Output})
 		}
 	}
 
