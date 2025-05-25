@@ -15,7 +15,7 @@ Plexr can be installed in several ways depending on your platform and preference
 If you have Go installed, this is the simplest method:
 
 ```bash
-go install github.com/SphereStacking/plexr@latest
+go install github.com/SphereStacking/plexr/cmd/plexr@latest
 ```
 
 This will install the latest version of Plexr to your `$GOPATH/bin` directory.
@@ -59,23 +59,38 @@ scoop install plexr
 
 Download pre-built binaries from the [releases page](https://github.com/SphereStacking/plexr/releases):
 
-1. Download the appropriate archive for your platform
-2. Extract the binary
-3. Move it to a directory in your PATH
-
-Example for Linux/macOS:
+#### Linux (x86_64)
 ```bash
-# Download (replace VERSION and PLATFORM)
-curl -L https://github.com/SphereStacking/plexr/releases/download/vVERSION/plexr_PLATFORM.tar.gz -o plexr.tar.gz
-
-# Extract
-tar -xzf plexr.tar.gz
-
-# Move to PATH
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Linux_x86_64.tar.gz | tar xz
 sudo mv plexr /usr/local/bin/
+```
 
-# Verify installation
-plexr --version
+#### Linux (arm64)
+```bash
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Linux_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+```
+
+#### macOS (Intel)
+```bash
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+```
+
+#### macOS (Apple Silicon)
+```bash
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+```
+
+#### Windows
+1. Download `plexr_Windows_x86_64.zip` from the [releases page](https://github.com/SphereStacking/plexr/releases)
+2. Extract the zip file
+3. Add the directory to your PATH or move `plexr.exe` to a directory in your PATH
+
+#### Verify installation
+```bash
+plexr version
 ```
 
 ## Verifying Installation
@@ -145,7 +160,7 @@ export PLEXR_STATE_FILE=/tmp/plexr_state.json
 ### Using Go
 
 ```bash
-go install github.com/SphereStacking/plexr@latest
+go install github.com/SphereStacking/plexr/cmd/plexr@latest
 ```
 
 ### From Source

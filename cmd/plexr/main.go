@@ -19,18 +19,11 @@ import (
 	"github.com/SphereStacking/plexr/cmd"
 )
 
-// Build variables (set by ldflags)
-var (
-	version   = "dev"
-	commit    = "unknown"
-	buildTime = "unknown"
-)
-
 func main() {
 	// Set version information
 	cmd.Version = version
 	cmd.Commit = commit
-	cmd.BuildTime = buildTime
+	cmd.BuildTime = date
 
 	// Execute the root command
 	cmd.Execute()

@@ -24,15 +24,37 @@ Plexr (Plan + Executor) helps developers set up and maintain their local develop
 
 ### Installation
 
+#### Using go install (Recommended)
 ```bash
-# macOS
-brew install plexr
+go install github.com/SphereStacking/plexr/cmd/plexr@latest
+```
 
-# Linux/Windows
-curl -sSL https://raw.githubusercontent.com/SphereStacking/plexr/main/install.sh | bash
+#### Download Pre-built Binary
+Download the latest binary from [Releases](https://github.com/SphereStacking/plexr/releases) page.
 
-# From source
-go install github.com/SphereStacking/plexr@latest
+```bash
+# Linux (x86_64)
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Linux_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# macOS (Intel)
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# macOS (Apple Silicon)
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# Windows
+# Download plexr_Windows_x86_64.zip from releases page and extract
+```
+
+#### Build from Source
+```bash
+git clone https://github.com/SphereStacking/plexr.git
+cd plexr
+make build
+sudo make install
 ```
 
 ### Basic Usage

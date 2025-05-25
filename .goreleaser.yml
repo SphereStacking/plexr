@@ -1,0 +1,92 @@
+project_name: plexr
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - id: plexr
+    main: ./cmd/plexr
+    binary: plexr
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: plexr
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+      - docs/guide/getting-started.md
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+  groups:
+    - title: '🚀 Features'
+      regexp: '^feat'
+    - title: '🐛 Bug Fixes'
+      regexp: '^fix'
+    - title: '⚡ Performance'
+      regexp: '^perf'
+    - title: '♻️ Refactoring'
+      regexp: '^refactor'
+
+release:
+  github:
+    owner: SphereStacking
+    name: plexr
+  name_template: "v{{.Version}}"
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## What's Changed
+    
+    **Full Changelog**: https://github.com/SphereStacking/plexr/compare/{{ .PreviousTag }}...{{ .Tag }}
+  footer: |
+    ## Installation
+    
+    ### Using go install
+    ```bash
+    go install github.com/SphereStacking/plexr/cmd/plexr@{{ .Tag }}
+    ```
+    
+    ### Download binary
+    Download the appropriate binary for your platform from the assets below.
+    
+    ## Thanks!
+    Thanks to all contributors!
