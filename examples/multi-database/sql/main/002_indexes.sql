@@ -1,3 +1,7 @@
+-- Additional indexes for performance
+CREATE INDEX IF NOT EXISTS idx_user_profiles_updated_at ON user_profiles(updated_at);
+CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at);
+
 -- Seed initial users
 INSERT INTO users (username, email) VALUES
     ('admin', 'admin@example.com'),

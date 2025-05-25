@@ -19,3 +19,25 @@ CREATE TABLE IF NOT EXISTS user_activity_summary (
 -- Create indexes for summary tables
 CREATE INDEX IF NOT EXISTS idx_daily_event_summary_date ON daily_event_summary(date);
 CREATE INDEX IF NOT EXISTS idx_user_activity_summary_date ON user_activity_summary(date);
+
+-- Create views for analytics
+CREATE OR REPLACE VIEW recent_events AS
+SELECT 
+    e.id,
+    e.event_type,
+    e.user_id,
+    e.properties,
+    e.created_at
+FROM events e
+WHERE e.created_at > CURRENT_TIMESTAMP - INTERVAL '24 hours'
+ORDER BY e.created_at DESC;
+
+CREATE OR REPLACE VIEW user_engagement AS
+SELECT 
+    user_id,
+    COUNT(DISTINCT DATE(created_at)) as active_days,
+    COUNT(*) as total_events,
+    MAX(created_at) as last_activity
+FROM events
+WHERE created_at > CURRENT_TIMESTAMP - INTERVAL '30 days'
+GROUP BY user_id;
