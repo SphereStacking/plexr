@@ -38,7 +38,7 @@ outdated setup documentation.`,
 		SilenceUsage: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			printLogo()
-			cmd.Help()
+			_ = cmd.Help()
 		},
 	}
 

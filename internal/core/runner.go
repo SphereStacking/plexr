@@ -40,6 +40,9 @@ func NewRunner(plan *config.ExecutionPlan, stateFile string) (*Runner, error) {
 
 // RegisterExecutor registers a custom executor
 func (r *Runner) RegisterExecutor(name string, executor Executor) error {
+	if name == "" {
+		return fmt.Errorf("executor name cannot be empty")
+	}
 	if _, exists := r.executors[name]; exists {
 		return fmt.Errorf("executor %s already registered", name)
 	}

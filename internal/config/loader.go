@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -28,6 +29,10 @@ func LoadExecutionPlan(path string) (*ExecutionPlan, error) {
 
 // ValidateExecutionPlan validates the execution plan
 func ValidateExecutionPlan(plan *ExecutionPlan) error {
+	if plan == nil {
+		return fmt.Errorf("plan is nil")
+	}
+	
 	if plan.Name == "" {
 		return fmt.Errorf("name is required")
 	}
@@ -36,11 +41,24 @@ func ValidateExecutionPlan(plan *ExecutionPlan) error {
 		return fmt.Errorf("version is required")
 	}
 
-	// Check that all steps reference defined executors
+	if len(plan.Steps) == 0 {
+		return fmt.Errorf("at least one step is required")
+	}
+
+	// Check for duplicate step IDs
+	stepIDs := make(map[string]bool)
 	for _, step := range plan.Steps {
 		if step.ID == "" {
 			return fmt.Errorf("step ID is required")
 		}
+		if stepIDs[step.ID] {
+			return fmt.Errorf("duplicate step id: %s", step.ID)
+		}
+		stepIDs[step.ID] = true
+	}
+
+	// Check that all steps reference defined executors
+	for _, step := range plan.Steps {
 
 		if step.Executor == "" {
 			return fmt.Errorf("executor is required for step %s", step.ID)
@@ -52,6 +70,42 @@ func ValidateExecutionPlan(plan *ExecutionPlan) error {
 
 		if len(step.Files) == 0 {
 			return fmt.Errorf("at least one file is required for step %s", step.ID)
+		}
+
+		// Validate file paths and platform values
+		validPlatforms := map[string]bool{
+			"":        true, // empty is valid (means all platforms)
+			"linux":   true,
+			"darwin":  true,
+			"windows": true,
+		}
+		for _, file := range step.Files {
+			// Validate file path
+			if file.Path == "" {
+				return fmt.Errorf("file path cannot be empty in step '%s'", step.ID)
+			}
+			if strings.HasPrefix(file.Path, "/") {
+				return fmt.Errorf("file path cannot be absolute in step '%s': %s", step.ID, file.Path)
+			}
+			if strings.Contains(file.Path, "..") {
+				return fmt.Errorf("file path cannot contain '..' in step '%s': %s", step.ID, file.Path)
+			}
+			
+			// Validate platform
+			if !validPlatforms[file.Platform] {
+				return fmt.Errorf("invalid platform '%s' in step '%s'", file.Platform, step.ID)
+			}
+		}
+
+		// Validate transaction mode
+		validTransactionModes := map[string]bool{
+			"":       true, // empty is valid (no transaction mode)
+			"none":   true,
+			"each":   true,
+			"all":    true,
+		}
+		if !validTransactionModes[step.TransactionMode] {
+			return fmt.Errorf("invalid transaction_mode '%s' in step '%s'", step.TransactionMode, step.ID)
 		}
 	}
 

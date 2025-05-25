@@ -30,6 +30,10 @@ type StateManager struct {
 
 // NewStateManager creates a new state manager
 func NewStateManager(filePath string) (*StateManager, error) {
+	if filePath == "" {
+		return nil, fmt.Errorf("state file path cannot be empty")
+	}
+	
 	return &StateManager{
 		filePath: filePath,
 	}, nil
