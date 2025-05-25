@@ -12,11 +12,12 @@ import (
 
 // ExecutionFile represents a file to be executed
 type ExecutionFile struct {
-	Path          string
-	Timeout       int
-	Retry         int
-	Platform      string
-	WorkDirectory string
+	Path            string
+	Timeout         int
+	Retry           int
+	Platform        string
+	WorkDirectory   string
+	TransactionMode string // For SQL executor
 }
 
 // ExecutionResult represents the result of executing a file

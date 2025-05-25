@@ -105,9 +105,18 @@ func (e *SQLExecutor) Execute(ctx context.Context, file ExecutionFile) (*Executi
 		}
 	}
 
-	// For now, we'll use a simple transaction flag
-	// TODO: Parse step configuration from the plan
+	// Determine transaction mode
 	useTransaction := false
+	switch file.TransactionMode {
+	case "all":
+		useTransaction = true
+	case "each":
+		// Each statement in its own transaction (default behavior)
+		useTransaction = false
+	case "none", "":
+		// No transaction
+		useTransaction = false
+	}
 
 	// Read SQL file
 	content, err := os.ReadFile(file.Path)
@@ -276,4 +285,12 @@ func (e *SQLExecutor) Close() error {
 		return e.db.Close()
 	}
 	return nil
+}
+
+// Clone creates a new instance of SQLExecutor with the same configuration
+func (e *SQLExecutor) Clone() *SQLExecutor {
+	return &SQLExecutor{
+		config: e.config,
+		db:     nil, // Each instance gets its own connection
+	}
 }
