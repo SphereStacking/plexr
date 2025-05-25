@@ -74,6 +74,31 @@ steps:
 plexr execute setup.yml
 ```
 
+### 🚀 Shell Completion
+
+Plexr provides git-style command completion with descriptions:
+
+```bash
+# Install completion for your shell
+plexr completion bash > ~/.local/share/bash-completion/completions/plexr  # Bash
+plexr completion zsh > "${fpath[1]}/_plexr"                              # Zsh
+plexr completion fish > ~/.config/fish/completions/plexr.fish            # Fish
+
+# After installation, you'll see completions like:
+❯❯❯ plexr [TAB]
+completion  -- Generate the autocompletion script for the specified shell
+execute     -- Execute a setup plan
+exec        -- alias for 'execute'
+run         -- alias for 'execute'
+help        -- Help about any command
+reset       -- Reset execution state
+status      -- Show execution status
+validate    -- Validate an execution plan
+val         -- alias for 'validate'
+check       -- alias for 'validate'
+version     -- Print version information
+```
+
 ## 📖 Documentation
 
 - [Getting Started Guide](docs/getting-started.md)

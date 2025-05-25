@@ -36,6 +36,12 @@ environments through simple YAML configuration files.
 No more "works on my machine" issues or spending hours following
 outdated setup documentation.`,
 		SilenceUsage: true,
+		CompletionOptions: cobra.CompletionOptions{
+			DisableDefaultCmd:   false,
+			DisableNoDescFlag:   false,
+			DisableDescriptions: false,
+			HiddenDefaultCmd:    false,
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			printLogo()
 			_ = cmd.Help()

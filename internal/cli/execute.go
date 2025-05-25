@@ -22,11 +22,12 @@ var (
 // NewExecuteCommand creates the execute command
 func NewExecuteCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "execute <plan.yml>",
-		Short: "Execute a setup plan",
-		Long:  `Execute a YAML-based setup plan to configure your local development environment.`,
-		Args:  cobra.ExactArgs(1),
-		RunE:  runExecute,
+		Use:     "execute <plan.yml>",
+		Aliases: []string{"exec", "run"},
+		Short:   "Execute a setup plan",
+		Long:    `Execute a YAML-based setup plan to configure your local development environment.`,
+		Args:    cobra.ExactArgs(1),
+		RunE:    runExecute,
 	}
 
 	cmd.Flags().BoolVarP(&auto, "auto", "a", false, "Skip confirmation prompts")
