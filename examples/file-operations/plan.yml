@@ -1,0 +1,40 @@
+name: file-operations
+version: 1.0.0
+description: |
+  Demonstrates file operations using temporary files.
+  No permanent changes are made to the system.
+
+steps:
+  - id: create-temp-files
+    description: Create temporary files for demo
+    executor: shell
+    files:
+      - path: scripts/create-temp.sh
+        platform: linux
+
+  - id: list-files
+    description: List created files
+    executor: shell
+    files:
+      - path: scripts/list-files.sh
+        platform: linux
+
+  - id: read-files
+    description: Read and display file contents
+    executor: shell
+    files:
+      - path: scripts/read-files.sh
+        platform: linux
+
+  - id: cleanup
+    description: Clean up temporary files
+    executor: shell
+    files:
+      - path: scripts/cleanup.sh
+        platform: linux
+
+executors:
+  shell:
+    type: shell
+    config:
+      shell: /bin/bash

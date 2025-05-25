@@ -1,0 +1,30 @@
+name: echo-demo
+version: 1.0.0
+description: |
+  A simple demo showing basic echo commands without side effects.
+  This example demonstrates how to use plexr for simple output tasks.
+
+steps:
+  - id: welcome
+    description: Display welcome message
+    executor: shell
+    files:
+      - path: scripts/welcome.sh
+
+  - id: system-info
+    description: Display system information
+    executor: shell
+    files:
+      - path: scripts/system-info.sh
+
+  - id: completion
+    description: Show completion message
+    executor: shell
+    files:
+      - path: scripts/completion.sh
+
+executors:
+  shell:
+    type: shell
+    config:
+      shell: /bin/bash

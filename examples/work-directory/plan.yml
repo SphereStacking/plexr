@@ -1,0 +1,38 @@
+name: work-directory-demo
+version: 1.0.0
+description: |
+  Demonstrates the work_directory feature that allows scripts
+  to be executed in a specific directory.
+
+steps:
+  - id: show-default-dir
+    description: Show current directory (default)
+    executor: shell
+    files:
+      - path: /root/_i/plexr/examples/work-directory/scripts/show-dir.sh
+
+  - id: show-tmp-dir
+    description: Show current directory when work_directory is /tmp
+    executor: shell
+    work_directory: /tmp
+    files:
+      - path: /root/_i/plexr/examples/work-directory/scripts/show-dir.sh
+
+  - id: create-in-workdir
+    description: Create a file in the work directory
+    executor: shell
+    work_directory: /tmp
+    files:
+      - path: /root/_i/plexr/examples/work-directory/scripts/create-file.sh
+
+  - id: verify-file
+    description: Verify the file was created in /tmp
+    executor: shell
+    files:
+      - path: /root/_i/plexr/examples/work-directory/scripts/verify-file.sh
+
+executors:
+  shell:
+    type: shell
+    config:
+      shell: /bin/bash

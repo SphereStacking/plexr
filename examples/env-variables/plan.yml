@@ -1,0 +1,33 @@
+name: env-variables
+version: 1.0.0
+description: |
+  Shows how to work with environment variables in plexr.
+  Demonstrates reading, setting, and using environment variables.
+
+steps:
+  - id: show-system-env
+    description: Display system environment variables
+    executor: shell
+    files:
+      - path: scripts/show-system-env.sh
+        platform: linux
+
+  - id: set-custom-env
+    description: Set and use custom environment variables
+    executor: shell
+    files:
+      - path: scripts/set-custom-env.sh
+        platform: linux
+
+  - id: check-env
+    description: Check for specific environment variables
+    executor: shell
+    files:
+      - path: scripts/check-env.sh
+        platform: linux
+
+executors:
+  shell:
+    type: shell
+    config:
+      shell: /bin/bash

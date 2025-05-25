@@ -1,46 +1,38 @@
-name: Basic Development Environment
+name: Basic Setup Demo
 version: 1.0.0
 description: |
-  基本的な開発環境のセットアップを行います。
-  必要なツールのインストール、設定ファイルの配置、
-  開発用のディレクトリ構造の作成を行います。
+  Demonstrates a basic development environment setup simulation.
+  Shows what would be installed and configured without making actual changes.
+  All operations are read-only or use temporary files.
 
 steps:
-  - id: install-tools
-    description: 必要な開発ツールをインストール
+  - id: check-tools
+    description: Check for development tools (simulation)
     executor: shell
     files:
-      - path: scripts/install-tools.sh
+      - path: scripts/check-tools.sh
         platform: linux
-      - path: scripts/install-tools.ps1
-        platform: windows
 
-  - id: setup-git
-    description: Gitの初期設定を行う
+  - id: check-git
+    description: Check Git configuration (read-only)
     executor: shell
     files:
-      - path: scripts/setup-git.sh
+      - path: scripts/check-git.sh
         platform: linux
-      - path: scripts/setup-git.ps1
-        platform: windows
 
-  - id: create-directories
-    description: 開発用ディレクトリを作成
+  - id: simulate-directories
+    description: Simulate directory structure creation
     executor: shell
     files:
-      - path: scripts/create-dirs.sh
+      - path: scripts/simulate-dirs.sh
         platform: linux
-      - path: scripts/create-dirs.ps1
-        platform: windows
 
-  - id: setup-vscode
-    description: VSCodeの設定を行う
+  - id: check-vscode
+    description: Check VSCode settings (simulation)
     executor: shell
     files:
-      - path: scripts/setup-vscode.sh
+      - path: scripts/check-vscode.sh
         platform: linux
-      - path: scripts/setup-vscode.ps1
-        platform: windows
 
 executors:
   shell:

@@ -1,0 +1,46 @@
+name: global-workdir-demo
+version: 1.0.0
+description: |
+  Demonstrates global work_directory setting that applies to all steps,
+  with the ability to override it for specific steps.
+work_directory: /tmp/plexr-global
+
+steps:
+  - id: create-global-dir
+    description: Create the global work directory
+    executor: shell
+    work_directory: /tmp
+    files:
+      - path: /root/_i/plexr/examples/global-workdir/scripts/create-dir.sh
+
+  - id: show-global-dir
+    description: Show current directory (uses global work_directory)
+    executor: shell
+    files:
+      - path: /root/_i/plexr/examples/global-workdir/scripts/show-dir.sh
+
+  - id: create-in-global
+    description: Create a file in global work directory
+    executor: shell
+    files:
+      - path: /root/_i/plexr/examples/global-workdir/scripts/create-file.sh
+
+  - id: show-override-dir
+    description: Show current directory with override
+    executor: shell
+    work_directory: /var/tmp
+    files:
+      - path: /root/_i/plexr/examples/global-workdir/scripts/show-dir.sh
+
+  - id: cleanup
+    description: Clean up test directories
+    executor: shell
+    work_directory: /tmp
+    files:
+      - path: /root/_i/plexr/examples/global-workdir/scripts/cleanup.sh
+
+executors:
+  shell:
+    type: shell
+    config:
+      shell: /bin/bash
