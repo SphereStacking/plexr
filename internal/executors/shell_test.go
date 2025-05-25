@@ -18,7 +18,7 @@ func TestShellExecutor(t *testing.T) {
 		executor := NewShellExecutor()
 		assert.NotNil(t, executor)
 		assert.Equal(t, "shell", executor.Name())
-		
+
 		// Check default shell based on platform
 		if runtime.GOOS == "windows" {
 			assert.Equal(t, "powershell.exe", executor.shell)
@@ -131,8 +131,8 @@ echo "PWD=$PWD"`,
 			t.Run(tt.name, func(t *testing.T) {
 				tmpDir := t.TempDir()
 				scriptPath := filepath.Join(tmpDir, "test.sh")
-				
-				err := os.WriteFile(scriptPath, []byte(tt.script), 0755)
+
+				err := os.WriteFile(scriptPath, []byte(tt.script), 0755) // #nosec G306 - Script needs to be executable
 				require.NoError(t, err)
 
 				executor := NewShellExecutor()
@@ -143,7 +143,7 @@ echo "PWD=$PWD"`,
 				}
 
 				result, err := executor.Execute(ctx, file)
-				
+
 				if tt.expectedError {
 					assert.Error(t, err)
 					assert.False(t, result.Success)
@@ -151,9 +151,9 @@ echo "PWD=$PWD"`,
 					assert.NoError(t, err)
 					assert.True(t, result.Success)
 				}
-				
+
 				assert.Contains(t, result.Output, tt.expectedOutput)
-				
+
 				if tt.checkDuration {
 					assert.GreaterOrEqual(t, result.Duration, int64(0))
 				}
@@ -164,19 +164,19 @@ echo "PWD=$PWD"`,
 	t.Run("Working directory functionality", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		workDir := filepath.Join(tmpDir, "work")
-		err := os.MkdirAll(workDir, 0755)
+		err := os.MkdirAll(workDir, 0755) // #nosec G301 - Test directory
 		require.NoError(t, err)
 
 		// Create a test file in work directory
 		testFile := filepath.Join(workDir, "test.txt")
-		err = os.WriteFile(testFile, []byte("test content"), 0644)
+		err = os.WriteFile(testFile, []byte("test content"), 0644) // #nosec G306 - Test file
 		require.NoError(t, err)
 
 		scriptPath := filepath.Join(tmpDir, "pwd_test.sh")
 		script := `#!/bin/bash
 pwd
 ls -la test.txt 2>/dev/null || echo "test.txt not found"`
-		err = os.WriteFile(scriptPath, []byte(script), 0755)
+		err = os.WriteFile(scriptPath, []byte(script), 0755) // #nosec G306 - Script needs to be executable
 		require.NoError(t, err)
 
 		executor := NewShellExecutor()
@@ -237,8 +237,8 @@ echo "This should not appear"`,
 			t.Run(tt.name, func(t *testing.T) {
 				tmpDir := t.TempDir()
 				scriptPath := filepath.Join(tmpDir, "timeout.sh")
-				
-				err := os.WriteFile(scriptPath, []byte(tt.script), 0755)
+
+				err := os.WriteFile(scriptPath, []byte(tt.script), 0755) // #nosec G306 - Script needs to be executable
 				require.NoError(t, err)
 
 				executor := NewShellExecutor()
@@ -270,7 +270,7 @@ echo "This should not appear"`,
 
 	t.Run("Platform-specific execution", func(t *testing.T) {
 		tmpDir := t.TempDir()
-		
+
 		// Create scripts for different platforms
 		scripts := map[string]string{
 			"linux": `#!/bin/bash
@@ -290,7 +290,7 @@ ver`,
 			if platform == "windows" {
 				scriptPath = filepath.Join(tmpDir, platform+".bat")
 			}
-			err := os.WriteFile(scriptPath, []byte(script), 0755)
+			err := os.WriteFile(scriptPath, []byte(script), 0755) // #nosec G306 - Script needs to be executable
 			require.NoError(t, err)
 			files[platform] = scriptPath
 		}
@@ -371,13 +371,13 @@ ver`,
 
 		tmpDir := t.TempDir()
 		scriptPath := filepath.Join(tmpDir, "long_running.sh")
-		
+
 		script := `#!/bin/bash
 for i in {1..10}; do
     echo "Step $i"
     sleep 1
 done`
-		err := os.WriteFile(scriptPath, []byte(script), 0755)
+		err := os.WriteFile(scriptPath, []byte(script), 0755) // #nosec G306 - Script needs to be executable
 		require.NoError(t, err)
 
 		executor := NewShellExecutor()
@@ -396,7 +396,7 @@ done`
 		result, err := executor.Execute(ctx, file)
 		assert.Error(t, err)
 		assert.False(t, result.Success)
-		
+
 		// Output should contain at least one step but not all
 		assert.Contains(t, result.Output, "Step 1")
 		assert.NotContains(t, result.Output, "Step 10")
@@ -405,13 +405,13 @@ done`
 	t.Run("Script with large output", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		scriptPath := filepath.Join(tmpDir, "large_output.sh")
-		
+
 		// Create a script that generates a lot of output
 		script := `#!/bin/bash
 for i in {1..100}; do
     echo "Line $i: This is a test line with some content to make it longer"
 done`
-		err := os.WriteFile(scriptPath, []byte(script), 0755)
+		err := os.WriteFile(scriptPath, []byte(script), 0755) // #nosec G306 - Script needs to be executable
 		require.NoError(t, err)
 
 		executor := NewShellExecutor()
@@ -424,7 +424,7 @@ done`
 		result, err := executor.Execute(ctx, file)
 		require.NoError(t, err)
 		assert.True(t, result.Success)
-		
+
 		// Verify output contains expected content
 		lines := strings.Split(strings.TrimSpace(result.Output), "\n")
 		assert.Equal(t, 100, len(lines))
@@ -437,7 +437,7 @@ func TestShellExecutorIntegration(t *testing.T) {
 	t.Run("Complex script with multiple operations", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		scriptPath := filepath.Join(tmpDir, "complex.sh")
-		
+
 		// Create a complex script that tests various features
 		script := `#!/bin/bash
 set -e
@@ -467,7 +467,7 @@ echo "Current date: $(date +%Y-%m-%d)"
 
 # Exit successfully
 exit 0`
-		err := os.WriteFile(scriptPath, []byte(script), 0755)
+		err := os.WriteFile(scriptPath, []byte(script), 0755) // #nosec G306 - Script needs to be executable
 		require.NoError(t, err)
 
 		executor := NewShellExecutor()
@@ -480,7 +480,7 @@ exit 0`
 		result, err := executor.Execute(ctx, file)
 		require.NoError(t, err)
 		assert.True(t, result.Success)
-		
+
 		// Verify all expected outputs
 		assert.Contains(t, result.Output, "Variable: Hello from Plexr")
 		assert.Contains(t, result.Output, "Function called with: test argument")

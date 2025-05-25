@@ -97,12 +97,12 @@ steps:
 
 				// Steps
 				assert.Len(t, plan.Steps, 3)
-				
+
 				// Step 1: prepare
 				assert.Equal(t, "prepare", plan.Steps[0].ID)
 				assert.Equal(t, "/tmp/prepare", plan.Steps[0].WorkDirectory)
 				assert.Empty(t, plan.Steps[0].DependsOn)
-				
+
 				// Step 2: install
 				assert.Equal(t, "install", plan.Steps[1].ID)
 				assert.Equal(t, []string{"prepare"}, plan.Steps[1].DependsOn)
@@ -111,7 +111,7 @@ steps:
 				assert.Len(t, plan.Steps[1].Files, 2)
 				assert.Equal(t, 600, plan.Steps[1].Files[0].Timeout)
 				assert.Equal(t, 3, plan.Steps[1].Files[0].Retry)
-				
+
 				// Step 3: configure
 				assert.Equal(t, "configure", plan.Steps[2].ID)
 				assert.Equal(t, "all", plan.Steps[2].TransactionMode)
@@ -411,7 +411,7 @@ steps:
 			// Create a temporary file
 			tmpDir := t.TempDir()
 			tmpFile := filepath.Join(tmpDir, "test.yml")
-			err := os.WriteFile(tmpFile, []byte(tt.yaml), 0644)
+			err := os.WriteFile(tmpFile, []byte(tt.yaml), 0600) // #nosec G306 - Test file
 			require.NoError(t, err)
 
 			// Load the plan
@@ -446,7 +446,7 @@ func TestLoadExecutionPlanFileOperations(t *testing.T) {
 	t.Run("empty file", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		tmpFile := filepath.Join(tmpDir, "empty.yml")
-		err := os.WriteFile(tmpFile, []byte(""), 0644)
+		err := os.WriteFile(tmpFile, []byte(""), 0600) // #nosec G306 - Test file
 		require.NoError(t, err)
 
 		plan, err := LoadExecutionPlan(tmpFile)
@@ -484,7 +484,7 @@ func TestValidateExecutionPlan(t *testing.T) {
 				},
 			},
 		}
-		
+
 		err := ValidateExecutionPlan(plan)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined executor 'shell'")
@@ -520,7 +520,7 @@ func TestValidateExecutionPlan(t *testing.T) {
 						},
 					},
 				}
-				
+
 				err := ValidateExecutionPlan(plan)
 				if tt.wantErr {
 					assert.Error(t, err)
@@ -619,7 +619,7 @@ steps:
 `
 		tmpDir := t.TempDir()
 		tmpFile := filepath.Join(tmpDir, "test.yml")
-		err := os.WriteFile(tmpFile, []byte(yaml), 0644)
+		err := os.WriteFile(tmpFile, []byte(yaml), 0600) // #nosec G306 - Test file
 		require.NoError(t, err)
 
 		plan, err := LoadExecutionPlan(tmpFile)

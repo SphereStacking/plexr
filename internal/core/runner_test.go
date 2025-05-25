@@ -75,8 +75,8 @@ func TestRunner(t *testing.T) {
 		stateFile := filepath.Join(tmpDir, "state.json")
 
 		plan := &config.ExecutionPlan{
-			Name:    "Test Plan",
-			Version: "1.0.0",
+			Name:        "Test Plan",
+			Version:     "1.0.0",
 			Description: `Test plan for runner tests`,
 			Executors: map[string]config.ExecutorConfig{
 				"shell": {Type: "shell"},
@@ -99,7 +99,7 @@ func TestRunner(t *testing.T) {
 		assert.Equal(t, plan, runner.plan)
 		assert.NotNil(t, runner.stateManager)
 		assert.NotNil(t, runner.executors)
-		
+
 		// Verify shell executor is registered by default
 		assert.Contains(t, runner.executors, "shell")
 	})
@@ -297,9 +297,9 @@ func TestRunner(t *testing.T) {
 		stepWorkDir := filepath.Join(tmpDir, "step_work")
 
 		// Create work directories
-		err := os.MkdirAll(globalWorkDir, 0755)
+		err := os.MkdirAll(globalWorkDir, 0755) // #nosec G301 - Test directory
 		require.NoError(t, err)
-		err = os.MkdirAll(stepWorkDir, 0755)
+		err = os.MkdirAll(stepWorkDir, 0755) // #nosec G301 - Test directory
 		require.NoError(t, err)
 
 		plan := &config.ExecutionPlan{
@@ -422,7 +422,7 @@ func TestRunner(t *testing.T) {
 
 		// Create a test file to check in skip_if
 		testFile := filepath.Join(tmpDir, "exists.txt")
-		err := os.WriteFile(testFile, []byte("test"), 0644)
+		err := os.WriteFile(testFile, []byte("test"), 0600) // #nosec G306 - Test file
 		require.NoError(t, err)
 
 		plan := &config.ExecutionPlan{

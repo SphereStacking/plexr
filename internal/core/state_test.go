@@ -51,7 +51,7 @@ func TestStateManager(t *testing.T) {
 			t.Run(tt.name, func(t *testing.T) {
 				filePath := tt.setupFunc()
 				sm, err := NewStateManager(filePath)
-				
+
 				if tt.wantErr {
 					assert.Error(t, err)
 					if tt.errMsg != "" && err != nil {
@@ -71,7 +71,7 @@ func TestStateManager(t *testing.T) {
 	t.Run("Save and Load state", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		stateFile := filepath.Join(tmpDir, "state.json")
-		
+
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
 
@@ -125,7 +125,7 @@ func TestStateManager(t *testing.T) {
 				// Verify file exists and is valid JSON
 				data, err := os.ReadFile(stateFile)
 				require.NoError(t, err)
-				
+
 				var jsonState map[string]interface{}
 				err = json.Unmarshal(data, &jsonState)
 				require.NoError(t, err)
@@ -133,7 +133,7 @@ func TestStateManager(t *testing.T) {
 				// Load state
 				loaded, err := sm.Load()
 				require.NoError(t, err)
-				
+
 				// Verify fields
 				assert.Equal(t, tt.state.SetupName, loaded.SetupName)
 				assert.Equal(t, tt.state.SetupVersion, loaded.SetupVersion)
@@ -141,7 +141,7 @@ func TestStateManager(t *testing.T) {
 				assert.Equal(t, tt.state.CurrentStep, loaded.CurrentStep)
 				assert.ElementsMatch(t, tt.state.CompletedSteps, loaded.CompletedSteps)
 				assert.ElementsMatch(t, tt.state.FailedFiles, loaded.FailedFiles)
-				
+
 				// Verify maps
 				if tt.state.InstalledTools != nil {
 					assert.Equal(t, tt.state.InstalledTools, loaded.InstalledTools)
@@ -183,7 +183,7 @@ func TestStateManager(t *testing.T) {
 	t.Run("Concurrent operations", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		stateFile := filepath.Join(tmpDir, "state.json")
-		
+
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
 
@@ -221,7 +221,7 @@ func TestStateManager(t *testing.T) {
 	t.Run("Reset functionality", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		stateFile := filepath.Join(tmpDir, "state.json")
-		
+
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
 
@@ -257,7 +257,7 @@ func TestStateManager(t *testing.T) {
 	t.Run("Step completion tracking", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		stateFile := filepath.Join(tmpDir, "state.json")
-		
+
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
 
@@ -291,10 +291,10 @@ func TestStateManager(t *testing.T) {
 		// Mark duplicate step (should not duplicate)
 		err = sm.MarkStepCompleted("new-step")
 		require.NoError(t, err)
-		
+
 		loaded, err = sm.Load()
 		require.NoError(t, err)
-		
+
 		// Count occurrences
 		count := 0
 		for _, step := range loaded.CompletedSteps {
@@ -308,7 +308,7 @@ func TestStateManager(t *testing.T) {
 	t.Run("SetCurrentStep", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		stateFile := filepath.Join(tmpDir, "state.json")
-		
+
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
 
@@ -343,7 +343,7 @@ func TestStateManager(t *testing.T) {
 		stateFile := filepath.Join(tmpDir, "state.json")
 
 		// Write invalid JSON
-		err := os.WriteFile(stateFile, []byte("{ invalid json"), 0644)
+		err := os.WriteFile(stateFile, []byte("{ invalid json"), 0600) // #nosec G306 - Test file
 		require.NoError(t, err)
 
 		sm, err := NewStateManager(stateFile)
@@ -376,7 +376,7 @@ func TestStateManager(t *testing.T) {
 		require.NoError(t, err)
 
 		// Make file read-only
-		err = os.Chmod(stateFile, 0444)
+		err = os.Chmod(stateFile, 0444) // #nosec G302 - Test file permissions
 		require.NoError(t, err)
 
 		// Save should fail
@@ -385,13 +385,13 @@ func TestStateManager(t *testing.T) {
 		assert.Error(t, err)
 
 		// Restore permissions for cleanup
-		_ = os.Chmod(stateFile, 0644)
+		_ = os.Chmod(stateFile, 0644) // #nosec G302 - Test file permissions
 	})
 
 	t.Run("UpdatedAt timestamp", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		stateFile := filepath.Join(tmpDir, "state.json")
-		
+
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
 
@@ -419,16 +419,16 @@ func TestStateManager(t *testing.T) {
 	t.Run("Empty state operations", func(t *testing.T) {
 		tmpDir := t.TempDir()
 		stateFile := filepath.Join(tmpDir, "state.json")
-		
+
 		sm, err := NewStateManager(stateFile)
 		require.NoError(t, err)
 
 		// Operations on non-existent state
 		assert.False(t, sm.IsStepCompleted("any-step"))
-		
+
 		err = sm.SetCurrentStep("step1")
 		assert.Error(t, err)
-		
+
 		err = sm.MarkStepCompleted("step1")
 		assert.Error(t, err)
 	})
@@ -468,7 +468,7 @@ func TestExecutionState(t *testing.T) {
 		assert.ElementsMatch(t, state.CompletedSteps, loaded.CompletedSteps)
 		assert.ElementsMatch(t, state.FailedFiles, loaded.FailedFiles)
 		assert.Equal(t, state.InstalledTools, loaded.InstalledTools)
-		
+
 		// Times should be close (accounting for JSON marshaling precision)
 		assert.WithinDuration(t, state.StartedAt, loaded.StartedAt, time.Second)
 		assert.WithinDuration(t, state.UpdatedAt, loaded.UpdatedAt, time.Second)
