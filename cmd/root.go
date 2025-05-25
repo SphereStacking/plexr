@@ -70,15 +70,27 @@ func init() {
 
 // printLogo prints the ASCII art logo
 func printLogo() {
-	fmt.Print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
-	fmt.Printf(`   ____  __    ____  _  _  ____ ` + "\n")
-	fmt.Printf(`  (  _ \(  )  (  __)( \/ )(  _ \` + "\n")
-	fmt.Printf(`   ) __// (_/\ ) _)  )  (  )   /` + "\n")
-	fmt.Printf(`  (___) \____/(____)(_/\_)(__\_)` + "\n")
+	logo := `
+PPPPPPPPPPPPPPPPPP   lllllll                                                           
+P::::::::::::::::P  l:::::l                                                           
+P::::::PPPPPP:::::P l:::::l                                                           
+PP:::::P     P:::::Pl:::::l                                                           
+  P::::P     P:::::P l::::l     eeeeeeeeeeee  xxxxxxx      xxxxxxxrrrrr   rrrrrrrrr   
+  P::::P     P:::::P l::::l   ee::::::::::::ee x:::::x    x:::::x r::::rrr:::::::::r  
+  P::::PPPPPP:::::P  l::::l  e::::::eeeee:::::eex:::::x  x:::::x  r:::::::::::::::::r 
+  P:::::::::::::PP   l::::l e::::::e     e:::::e x:::::xx:::::x   rr::::::rrrrr::::::r
+  P::::PPPPPPPPP     l::::l e:::::::eeeee::::::e  x::::::::::x     r:::::r     r:::::r
+  P::::P             l::::l e:::::::::::::::::e    x::::::::x      r:::::r     rrrrrrr
+  P::::P             l::::l e::::::eeeeeeeeeee     x::::::::x      r:::::r            
+  P::::P             l::::l e:::::::e             x::::::::::x     r:::::r            
+PP::::::PP          l::::::le::::::::e           x:::::xx:::::x    r:::::r            
+P::::::::P          l::::::l e::::::::eeeeeeee  x:::::x  x:::::x   r:::::r            
+P::::::::P          l::::::l  ee:::::::::::::e x:::::x    x:::::x  r:::::r            
+PPPPPPPPPP          llllllll    eeeeeeeeeeeeeexxxxxxx      xxxxxxx rrrrrrr            
+`
+	fmt.Print(logo)
+	fmt.Printf("\n  Plan + Execute v%s \n", Version)
 	fmt.Println()
-	fmt.Printf("  Plan + Execute v%s \n", Version)
-	fmt.Println()
-	fmt.Print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
 }
 
 // IsVerbose returns true if verbose flag is set
