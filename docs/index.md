@@ -31,17 +31,25 @@ features:
     details: Dry-run mode, skip conditions, and rollback support ensure safe operations
 ---
 
-:::warning Development Status
-This project was created through vibe coding sessions. While the core concepts and architecture are documented, not all features described may be fully implemented yet. See the [project status](#project-status) for details on what's currently available.
-:::
+## 🎉 Latest Release: v0.1.0
+
+Download the latest release from [GitHub Releases](https://github.com/SphereStacking/plexr/releases/tag/v0.1.0) or install with:
+
+```bash
+go install github.com/SphereStacking/plexr/cmd/plexr@v0.1.0
+```
 
 ## Quick Start
 
 Install Plexr and get started in minutes:
 
 ```bash
-# Install from source
-go install github.com/SphereStacking/plexr@latest
+# Install latest release
+go install github.com/SphereStacking/plexr/cmd/plexr@latest
+
+# Or download pre-built binary
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_$(uname -s)_$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/').tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
 
 # Run your first plan
 plexr execute setup.yml
@@ -88,19 +96,24 @@ steps:
       - path: "scripts/db_setup.sh"
 ```
 
-## Project Status
+## Features
 
-Plexr is in active development. Currently implemented:
-- ✅ Core execution engine
-- ✅ Shell executor  
-- ✅ State management
-- ✅ Basic CLI commands
+### v0.1.0 (Current Release)
+- ✅ Core execution engine with dependency resolution
+- ✅ Shell executor for running scripts and commands
+- ✅ SQL executor with PostgreSQL support
+- ✅ State management with resume capability
+- ✅ CLI commands (execute, validate, status, reset)
+- ✅ Environment variable expansion
+- ✅ Platform-specific file selection
+- ✅ Error handling and rollback support
 
-Not yet implemented:
-- ❌ SQL executor (documented but not built)
-- ❌ Full platform detection
-- ❌ Transaction modes
-- ❌ Some advanced features
+### Coming Soon
+- 🚧 Additional database support (MySQL, SQLite)
+- 🚧 HTTP executor for API calls
+- 🚧 Docker executor
+- 🚧 Parallel execution
+- 🚧 Advanced conditional logic
 
 ## Learn More
 

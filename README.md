@@ -3,9 +3,8 @@
 A developer-friendly CLI tool for automating local development environment setup with YAML-based execution plans.
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev/)
+[![Release](https://img.shields.io/github/v/release/SphereStacking/plexr?include_prereleases)](https://github.com/SphereStacking/plexr/releases)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
-> ⚠️ **Note**: This project was created through vibe coding sessions. While the core concepts and architecture are in place, some features described in this documentation may not be fully implemented yet. Please refer to the [Project Status](#-project-status) section for details on what's currently available.
 
 ## 🎯 What is Plexr?
 
@@ -152,29 +151,43 @@ Plexr makes environment setup:
 - **Environment Updates**: Apply schema changes, update configurations safely
 - **Cross-Platform Development**: Handle OS-specific setup automatically
 
-## 🏗️ Project Status
+## 📦 Current Release
 
-Plexr is currently in active development. This project was created through vibe coding sessions, and we're working towards a stable v1.0 release.
+**Latest Version**: [v0.1.0](https://github.com/SphereStacking/plexr/releases/tag/v0.1.0)
 
-### Currently Implemented
-- [x] Core execution engine
-- [x] Shell executor
-- [x] SQL executor (PostgreSQL)
-- [x] State management
-- [x] Basic CLI commands (execute, validate, status, reset)
-- [x] YAML configuration parsing
-- [x] Dependency resolution
-- [x] Shell completion support
+### Features Available in v0.1.0
 
-### In Progress / Not Yet Implemented
-- [ ] SQL executor for other databases (MySQL, SQLite)
-- [ ] Platform detection (partial implementation)
-- [ ] Interactive help system
-- [ ] Plugin system
-- [ ] Transaction mode
-- [ ] Some advanced features described in documentation
+✅ **Core Features**
+- Shell executor for running scripts
+- SQL executor for PostgreSQL databases
+- State management for resumable execution
+- YAML-based execution plans
+- Dependency resolution between steps
+- Environment variable expansion
+- Transaction mode support (none, each, all)
 
-**Important**: While the documentation describes the complete vision for Plexr, not all features are currently implemented. The core functionality for basic execution plans is working, but advanced features like SQL executors, transaction modes, and some platform-specific handling may not be available yet.
+✅ **CLI Commands**
+- `execute` - Run execution plans
+- `validate` - Validate plan syntax
+- `status` - Check execution status
+- `reset` - Reset execution state
+- `version` - Show version information
+- `completion` - Generate shell completions
+
+✅ **Platform Support**
+- Linux (x86_64, arm64)
+- macOS (Intel, Apple Silicon)
+- Windows (x86_64)
+
+### Roadmap
+
+🚧 **Planned for Future Releases**
+- SQL executor for MySQL and SQLite
+- Advanced platform detection
+- Interactive error recovery
+- Plugin system
+- Web UI for monitoring
+- Remote state storage
 
 ## 🤝 Contributing
 

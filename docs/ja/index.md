@@ -31,17 +31,25 @@ features:
     details: ドライラン、スキップ条件、ロールバック機能で安全な操作を保証
 ---
 
-:::warning 開発状況
-このプロジェクトはバイブコーディングセッションを通じて作成されました。コアコンセプトとアーキテクチャは文書化されていますが、記載されているすべての機能が完全に実装されているわけではありません。現在利用可能な機能の詳細については[プロジェクトステータス](#プロジェクトステータス)をご覧ください。
-:::
+## 🎉 最新リリース: v0.1.0
+
+[GitHub Releases](https://github.com/SphereStacking/plexr/releases/tag/v0.1.0)から最新版をダウンロードするか、以下でインストール：
+
+```bash
+go install github.com/SphereStacking/plexr/cmd/plexr@v0.1.0
+```
 
 ## クイックスタート
 
 Plexrをインストールして、数分で使い始められます：
 
 ```bash
-# ソースからインストール
-go install github.com/SphereStacking/plexr@latest
+# 最新リリースをインストール
+go install github.com/SphereStacking/plexr/cmd/plexr@latest
+
+# またはプリビルドバイナリをダウンロード
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_$(uname -s)_$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/arm64/').tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
 
 # 最初のプランを実行
 plexr execute setup.yml
@@ -88,19 +96,24 @@ steps:
       - path: "scripts/db_setup.sh"
 ```
 
-## プロジェクトステータス
+## 機能
 
-Plexrは現在開発中です。実装済み：
-- ✅ コア実行エンジン
-- ✅ シェルエグゼキューター
-- ✅ ステート管理
-- ✅ 基本的なCLIコマンド
+### v0.1.0（最新リリース）
+- ✅ 依存関係解決を備えたコア実行エンジン
+- ✅ スクリプトとコマンド実行用のシェルエグゼキューター
+- ✅ PostgreSQLサポートを含むSQLエグゼキューター
+- ✅ 再開機能付きステート管理
+- ✅ CLIコマンド（execute, validate, status, reset）
+- ✅ 環境変数の展開
+- ✅ プラットフォーム固有のファイル選択
+- ✅ エラーハンドリングとロールバックサポート
 
-未実装：
-- ❌ SQLエグゼキューター（文書化済みだが未実装）
-- ❌ 完全なプラットフォーム検出
-- ❌ トランザクションモード
-- ❌ 一部の高度な機能
+### 今後の予定
+- 🚧 追加データベースサポート（MySQL、SQLite）
+- 🚧 API呼び出し用HTTPエグゼキューター
+- 🚧 Dockerエグゼキューター
+- 🚧 並列実行
+- 🚧 高度な条件分岐ロジック
 
 ## さらに詳しく
 

@@ -15,10 +15,14 @@ Plexr can be installed in several ways depending on your platform and preference
 If you have Go installed, this is the simplest method:
 
 ```bash
+# Install the latest version
 go install github.com/SphereStacking/plexr/cmd/plexr@latest
+
+# Or install a specific version (e.g., v0.1.0)
+go install github.com/SphereStacking/plexr/cmd/plexr@v0.1.0
 ```
 
-This will install the latest version of Plexr to your `$GOPATH/bin` directory.
+This will install Plexr to your `$GOPATH/bin` directory.
 
 ### Building from Source
 
@@ -57,34 +61,56 @@ scoop install plexr
 
 ### Binary Releases
 
-Download pre-built binaries from the [releases page](https://github.com/SphereStacking/plexr/releases):
+Pre-built binaries are available for multiple platforms. Download from the [releases page](https://github.com/SphereStacking/plexr/releases).
 
 #### Linux (x86_64)
 ```bash
+# Download the latest release
 curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Linux_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# Or download a specific version (e.g., v0.1.0)
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Linux_x86_64.tar.gz | tar xz
 sudo mv plexr /usr/local/bin/
 ```
 
 #### Linux (arm64)
 ```bash
+# Download the latest release
 curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Linux_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# Or download a specific version (e.g., v0.1.0)
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Linux_arm64.tar.gz | tar xz
 sudo mv plexr /usr/local/bin/
 ```
 
 #### macOS (Intel)
 ```bash
+# Download the latest release
 curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# Or download a specific version (e.g., v0.1.0)
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Darwin_x86_64.tar.gz | tar xz
 sudo mv plexr /usr/local/bin/
 ```
 
 #### macOS (Apple Silicon)
 ```bash
+# Download the latest release
 curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# Or download a specific version (e.g., v0.1.0)
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Darwin_arm64.tar.gz | tar xz
 sudo mv plexr /usr/local/bin/
 ```
 
 #### Windows
-1. Download `plexr_Windows_x86_64.zip` from the [releases page](https://github.com/SphereStacking/plexr/releases)
+1. Download the appropriate file from the [releases page](https://github.com/SphereStacking/plexr/releases):
+   - For latest: `plexr_Windows_x86_64.zip`
+   - For v0.1.0: Download from the v0.1.0 release page
 2. Extract the zip file
 3. Add the directory to your PATH or move `plexr.exe` to a directory in your PATH
 
@@ -103,7 +129,7 @@ plexr --version
 
 You should see output like:
 ```
-plexr version 1.0.0
+plexr version 0.1.0
 ```
 
 ## Shell Completion
@@ -160,7 +186,11 @@ export PLEXR_STATE_FILE=/tmp/plexr_state.json
 ### Using Go
 
 ```bash
+# Upgrade to the latest version
 go install github.com/SphereStacking/plexr/cmd/plexr@latest
+
+# Or upgrade to a specific version
+go install github.com/SphereStacking/plexr/cmd/plexr@v0.1.0
 ```
 
 ### From Source

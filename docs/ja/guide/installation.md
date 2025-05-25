@@ -15,10 +15,14 @@ Plexrは、お使いのプラットフォームや好みに応じて、いくつ
 Goがインストールされている場合、これが最も簡単な方法です：
 
 ```bash
-go install github.com/SphereStacking/plexr@latest
+# 最新バージョンをインストール
+go install github.com/SphereStacking/plexr/cmd/plexr@latest
+
+# または特定のバージョンをインストール（例：v0.1.0）
+go install github.com/SphereStacking/plexr/cmd/plexr@v0.1.0
 ```
 
-これにより、Plexrの最新バージョンが`$GOPATH/bin`ディレクトリにインストールされます。
+これにより、Plexrが`$GOPATH/bin`ディレクトリにインストールされます。
 
 ### ソースからビルドする
 
@@ -57,25 +61,62 @@ scoop install plexr
 
 ### バイナリリリース
 
-[リリースページ](https://github.com/SphereStacking/plexr/releases)から事前ビルドされたバイナリをダウンロード：
+複数のプラットフォーム向けに事前ビルドされたバイナリが利用可能です。[リリースページ](https://github.com/SphereStacking/plexr/releases)からダウンロードしてください。
 
-1. お使いのプラットフォーム用の適切なアーカイブをダウンロード
-2. バイナリを展開
-3. PATHのディレクトリに移動
-
-Linux/macOSの例：
+#### Linux (x86_64)
 ```bash
-# ダウンロード（VERSIONとPLATFORMを置き換えてください）
-curl -L https://github.com/SphereStacking/plexr/releases/download/vVERSION/plexr_PLATFORM.tar.gz -o plexr.tar.gz
-
-# 展開
-tar -xzf plexr.tar.gz
-
-# PATHに移動
+# 最新リリースをダウンロード
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Linux_x86_64.tar.gz | tar xz
 sudo mv plexr /usr/local/bin/
 
-# インストールを確認
-plexr --version
+# または特定のバージョンをダウンロード（例：v0.1.0）
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Linux_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+```
+
+#### Linux (arm64)
+```bash
+# 最新リリースをダウンロード
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Linux_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# または特定のバージョンをダウンロード（例：v0.1.0）
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Linux_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+```
+
+#### macOS (Intel)
+```bash
+# 最新リリースをダウンロード
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# または特定のバージョンをダウンロード（例：v0.1.0）
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Darwin_x86_64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+```
+
+#### macOS (Apple Silicon)
+```bash
+# 最新リリースをダウンロード
+curl -sSL https://github.com/SphereStacking/plexr/releases/latest/download/plexr_Darwin_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+
+# または特定のバージョンをダウンロード（例：v0.1.0）
+curl -sSL https://github.com/SphereStacking/plexr/releases/download/v0.1.0/plexr_Darwin_arm64.tar.gz | tar xz
+sudo mv plexr /usr/local/bin/
+```
+
+#### Windows
+1. [リリースページ](https://github.com/SphereStacking/plexr/releases)から適切なファイルをダウンロード：
+   - 最新版：`plexr_Windows_x86_64.zip`
+   - v0.1.0：v0.1.0のリリースページからダウンロード
+2. zipファイルを展開
+3. ディレクトリをPATHに追加するか、`plexr.exe`をPATH内のディレクトリに移動
+
+#### インストールの確認
+```bash
+plexr version
 ```
 
 ## インストールの確認
@@ -88,7 +129,7 @@ plexr --version
 
 次のような出力が表示されるはずです：
 ```
-plexr version 1.0.0
+plexr version 0.1.0
 ```
 
 ## シェル補完
@@ -145,7 +186,11 @@ export PLEXR_STATE_FILE=/tmp/plexr_state.json
 ### Goを使用
 
 ```bash
-go install github.com/SphereStacking/plexr@latest
+# 最新バージョンにアップグレード
+go install github.com/SphereStacking/plexr/cmd/plexr@latest
+
+# または特定のバージョンにアップグレード
+go install github.com/SphereStacking/plexr/cmd/plexr@v0.1.0
 ```
 
 ### ソースから
