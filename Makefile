@@ -35,14 +35,17 @@ GOIMPORTS=$(shell which goimports 2>/dev/null || echo "$(GOPATH)/bin/goimports")
 # Git hooks
 HOOKS_DIR=.githooks
 
-.PHONY: all build clean test coverage deps run help lint fmt fmt-check vet tools dev-setup install hooks
+.PHONY: all build clean test coverage deps run help lint fmt fmt-check vet tools dev-setup install hooks release release-check release-local
 
 ## help: Display this help message
 help:
 	@echo "Usage: make [target]"
 	@echo ""
-	@echo "Targets:"
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo "Main targets:"
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | grep -E "^  (build|test|install|release)" | sort
+	@echo ""
+	@echo "Development targets:"
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | grep -vE "^  (build|test|install|release)" | sort
 
 ## all: Build for current platform
 all: clean deps test build
@@ -155,3 +158,98 @@ fmt-check:
 vet:
 	@echo "Running go vet..."
 	$(GOCMD) vet ./...
+
+## release-check: Check if ready for release
+release-check:
+	@echo "🔍 Checking release readiness..."
+	@echo ""
+	@echo "1️⃣  Checking for uncommitted changes..."
+	@if ! git diff --quiet || ! git diff --cached --quiet; then \
+		echo "❌ You have uncommitted changes. Please commit or stash them."; \
+		exit 1; \
+	else \
+		echo "✅ Working directory is clean"; \
+	fi
+	@echo ""
+	@echo "2️⃣  Checking if on main branch..."
+	@if [ "$$(git rev-parse --abbrev-ref HEAD)" != "main" ]; then \
+		echo "❌ You are not on the main branch. Please switch to main."; \
+		exit 1; \
+	else \
+		echo "✅ On main branch"; \
+	fi
+	@echo ""
+	@echo "3️⃣  Checking if main is up to date..."
+	@git fetch origin
+	@if [ "$$(git rev-parse HEAD)" != "$$(git rev-parse origin/main)" ]; then \
+		echo "❌ Your main branch is not up to date. Please pull latest changes."; \
+		exit 1; \
+	else \
+		echo "✅ Main branch is up to date"; \
+	fi
+	@echo ""
+	@echo "4️⃣  Running tests..."
+	@if ! $(MAKE) test > /dev/null 2>&1; then \
+		echo "❌ Tests failed. Please fix them before releasing."; \
+		exit 1; \
+	else \
+		echo "✅ All tests pass"; \
+	fi
+	@echo ""
+	@echo "5️⃣  Running linter..."
+	@if ! $(MAKE) lint > /dev/null 2>&1; then \
+		echo "❌ Linting failed. Please fix issues before releasing."; \
+		exit 1; \
+	else \
+		echo "✅ Linting passes"; \
+	fi
+	@echo ""
+	@echo "🎉 Ready for release!"
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Decide on version number (current: $$(git describe --tags --abbrev=0 2>/dev/null || echo 'no tags yet'))"
+	@echo "  2. Run: make release VERSION=v0.1.0"
+
+## release: Create a new release
+release:
+	@if [ -z "$(VERSION)" ]; then \
+		echo "❌ VERSION is required. Usage: make release VERSION=v0.1.0"; \
+		exit 1; \
+	fi
+	@if ! echo "$(VERSION)" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?$$'; then \
+		echo "❌ Invalid version format. Use semantic versioning like v0.1.0 or v1.0.0-rc.1"; \
+		exit 1; \
+	fi
+	@echo "🚀 Creating release $(VERSION)..."
+	@echo ""
+	@echo "📝 Recent commits since last tag:"
+	@echo "================================"
+	@git log --oneline $$(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD 2>/dev/null || git log --oneline -10
+	@echo ""
+	@echo "Do you want to create release $(VERSION)? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@echo ""
+	@echo "📝 Enter release notes (or press Ctrl+D when done):"
+	@echo "---------------------------------------------------"
+	@NOTES=$$(cat) && \
+	git tag -a $(VERSION) -m "Release $(VERSION)" -m "$$NOTES"
+	@echo ""
+	@echo "✅ Tag $(VERSION) created!"
+	@echo ""
+	@echo "To push the release, run:"
+	@echo "  git push origin $(VERSION)"
+	@echo ""
+	@echo "Or to push everything including the tag:"
+	@echo "  git push origin main --tags"
+
+## release-local: Test release process locally
+release-local:
+	@echo "🧪 Testing release locally with goreleaser..."
+	@if ! command -v goreleaser > /dev/null; then \
+		echo "❌ goreleaser not installed. Install from https://goreleaser.com"; \
+		exit 1; \
+	fi
+	goreleaser release --snapshot --clean
+	@echo ""
+	@echo "✅ Local release artifacts created in ./dist/"
+	@echo ""
+	@ls -la dist/ | grep -E "(tar\.gz|zip|checksums)" || true
