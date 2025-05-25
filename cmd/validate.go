@@ -1,4 +1,7 @@
-package cli
+/*
+Copyright © 2025 Plexr Authors
+*/
+package cmd
 
 import (
 	"fmt"
@@ -7,16 +10,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewValidateCommand creates the validate command
-func NewValidateCommand() *cobra.Command {
-	return &cobra.Command{
-		Use:     "validate <plan.yml>",
-		Aliases: []string{"val", "check"},
-		Short:   "Validate an execution plan",
-		Long:    `Validate a YAML execution plan for syntax errors and configuration issues.`,
-		Args:    cobra.ExactArgs(1),
-		RunE:    runValidate,
-	}
+// validateCmd represents the validate command
+var validateCmd = &cobra.Command{
+	Use:     "validate <plan.yml>",
+	Aliases: []string{"val", "check"},
+	Short:   "Validate an execution plan",
+	Long: `Validate a YAML execution plan for syntax errors and configuration issues.
+
+This command checks:
+- YAML syntax validity
+- Required fields presence
+- Step dependencies resolution
+- Executor references
+- File paths security`,
+	Example: `  # Validate a plan file
+  plexr validate plan.yml
+
+  # Validate with verbose output
+  plexr validate plan.yml -v`,
+	Args: cobra.ExactArgs(1),
+	RunE: runValidate,
+}
+
+func init() {
+	rootCmd.AddCommand(validateCmd)
 }
 
 func runValidate(cmd *cobra.Command, args []string) error {

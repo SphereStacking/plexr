@@ -1,4 +1,7 @@
-package cli
+/*
+Copyright © 2025 Plexr Authors
+*/
+package cmd
 
 import (
 	"encoding/json"
@@ -11,15 +14,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewStatusCommand creates the status command
-func NewStatusCommand() *cobra.Command {
-	return &cobra.Command{
-		Use:   "status <plan.yml>",
-		Short: "Show execution status",
-		Long:  `Display the current execution status of a setup plan.`,
-		Args:  cobra.ExactArgs(1),
-		RunE:  runStatus,
-	}
+// statusCmd represents the status command
+var statusCmd = &cobra.Command{
+	Use:   "status <plan.yml>",
+	Short: "Show execution status",
+	Long: `Display the current execution status of a setup plan.
+
+This command shows:
+- Setup information (name, version, platform)
+- Execution timeline (start time, last update)
+- Current step being executed
+- Completed steps
+- Failed files (if any)
+- Installed tools and versions`,
+	Example: `  # Show status of a plan
+  plexr status plan.yml
+
+  # Show status with detailed JSON output
+  plexr status plan.yml -v`,
+	Args: cobra.ExactArgs(1),
+	RunE: runStatus,
+}
+
+func init() {
+	rootCmd.AddCommand(statusCmd)
 }
 
 func runStatus(cmd *cobra.Command, args []string) error {
@@ -76,7 +94,7 @@ func runStatus(cmd *cobra.Command, args []string) error {
 	}
 
 	// Show raw JSON if verbose
-	if verbose {
+	if IsVerbose() {
 		fmt.Println("\n📄 Raw State:")
 		data, err := json.MarshalIndent(state, "", "  ")
 		if err != nil {

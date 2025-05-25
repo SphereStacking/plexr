@@ -1,4 +1,7 @@
-package cli
+/*
+Copyright © 2025 Plexr Authors
+*/
+package cmd
 
 import (
 	"fmt"
@@ -9,19 +12,35 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewResetCommand creates the reset command
-func NewResetCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "reset <plan.yml>",
-		Short: "Reset execution state",
-		Long:  `Reset the execution state of a setup plan, allowing it to be run from the beginning.`,
-		Args:  cobra.ExactArgs(1),
-		RunE:  runReset,
-	}
+var (
+	// Reset command flags
+	resetAuto bool
+)
 
-	cmd.Flags().BoolVarP(&auto, "auto", "a", false, "Skip confirmation prompt")
+// resetCmd represents the reset command
+var resetCmd = &cobra.Command{
+	Use:   "reset <plan.yml>",
+	Short: "Reset execution state",
+	Long: `Reset the execution state of a setup plan, allowing it to be run from the beginning.
 
-	return cmd
+This command removes all execution history, including:
+- Completed steps tracking
+- Failed files
+- Current step information
+- Installed tools tracking`,
+	Example: `  # Reset a plan's execution state
+  plexr reset plan.yml
+
+  # Reset without confirmation prompt
+  plexr reset plan.yml --auto`,
+	Args: cobra.ExactArgs(1),
+	RunE: runReset,
+}
+
+func init() {
+	rootCmd.AddCommand(resetCmd)
+
+	resetCmd.Flags().BoolVarP(&resetAuto, "auto", "a", false, "Skip confirmation prompt")
 }
 
 func runReset(cmd *cobra.Command, args []string) error {
@@ -36,7 +55,7 @@ func runReset(cmd *cobra.Command, args []string) error {
 	}
 
 	// Confirm reset
-	if !auto {
+	if !resetAuto {
 		fmt.Print("⚠️  This will reset all execution state. Continue? [y/N]: ")
 		var response string
 		if _, err := fmt.Scanln(&response); err != nil {

@@ -1,4 +1,7 @@
-package cli
+/*
+Copyright © 2025 Plexr Authors
+*/
+package cmd
 
 import (
 	"context"
@@ -12,6 +15,7 @@ import (
 )
 
 var (
+	// Execute command flags
 	auto     bool
 	dryRun   bool
 	fromStep string
@@ -19,24 +23,41 @@ var (
 	only     string
 )
 
-// NewExecuteCommand creates the execute command
-func NewExecuteCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "execute <plan.yml>",
-		Aliases: []string{"exec", "run"},
-		Short:   "Execute a setup plan",
-		Long:    `Execute a YAML-based setup plan to configure your local development environment.`,
-		Args:    cobra.ExactArgs(1),
-		RunE:    runExecute,
-	}
+// executeCmd represents the execute command
+var executeCmd = &cobra.Command{
+	Use:     "execute <plan.yml>",
+	Aliases: []string{"exec", "run"},
+	Short:   "Execute a setup plan",
+	Long: `Execute a YAML-based setup plan to configure your local development environment.
 
-	cmd.Flags().BoolVarP(&auto, "auto", "a", false, "Skip confirmation prompts")
-	cmd.Flags().BoolVarP(&dryRun, "dry-run", "d", false, "Show what would be executed without running")
-	cmd.Flags().StringVar(&fromStep, "from-step", "", "Start execution from a specific step")
-	cmd.Flags().StringVarP(&platform, "platform", "p", "", "Override platform detection")
-	cmd.Flags().StringVarP(&only, "only", "o", "", "Execute only specific steps")
+The execute command reads a plan file and runs all defined steps in order,
+respecting dependencies and skip conditions.`,
+	Example: `  # Execute a plan
+  plexr execute plan.yml
 
-	return cmd
+  # Execute with auto-confirmation
+  plexr execute plan.yml --auto
+
+  # Dry run to see what would be executed
+  plexr execute plan.yml --dry-run
+
+  # Start from a specific step
+  plexr execute plan.yml --from-step=build
+
+  # Execute only specific steps
+  plexr execute plan.yml --only=test,deploy`,
+	Args: cobra.ExactArgs(1),
+	RunE: runExecute,
+}
+
+func init() {
+	rootCmd.AddCommand(executeCmd)
+
+	executeCmd.Flags().BoolVarP(&auto, "auto", "a", false, "Skip confirmation prompts")
+	executeCmd.Flags().BoolVarP(&dryRun, "dry-run", "d", false, "Show what would be executed without running")
+	executeCmd.Flags().StringVar(&fromStep, "from-step", "", "Start execution from a specific step")
+	executeCmd.Flags().StringVarP(&platform, "platform", "p", "", "Override platform detection")
+	executeCmd.Flags().StringVarP(&only, "only", "o", "", "Execute only specific steps")
 }
 
 func runExecute(cmd *cobra.Command, args []string) error {
@@ -46,7 +67,7 @@ func runExecute(cmd *cobra.Command, args []string) error {
 	planFile := args[0]
 
 	// Initialize logger
-	err := utils.InitLogger(verbose)
+	err := utils.InitLogger(IsVerbose())
 	if err != nil {
 		return fmt.Errorf("failed to initialize logger: %w", err)
 	}
